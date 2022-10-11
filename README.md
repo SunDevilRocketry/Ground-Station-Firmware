@@ -11,9 +11,15 @@ based ground station computer. The unit is equipped with a socket for an XBee mo
 <p>
 blink:blinks status LED to test programmer and board setup 
 
-flight: firmware to be run during normal usage 
+reciever: Recieves wireless telemetry and outputs to USB 
 
-terminal: firmware to allow terminal access to all PCB hardware 
+transmitter: Transmits wireless telemetry recieved from USB
+
+terminal: Remote interface to the terminal application 
+
+hotfire: Firmware to be used during the hotfire of the liquid engine
+
+flight: Firmware to be used with the flight computer
 </p>
 
 <p><b>Working Directory Structure</b></p>
