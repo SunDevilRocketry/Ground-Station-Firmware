@@ -32,8 +32,13 @@ Project Includes
 /*------------------------------------------------------------------------------
 Global Variables                                                                  
 ------------------------------------------------------------------------------*/
+
+/* MCU Peripheral handles */
 UART_HandleTypeDef huart4; /* Xbee UART */
 UART_HandleTypeDef huart1; /* USB UART  */
+
+/* Wireless Module Settings */
+WIRELESS_MOD_CODES wireless_mod = XBEE;
 
 
 /*------------------------------------------------------------------------------
@@ -59,6 +64,14 @@ int main
 	)
 {
 /*------------------------------------------------------------------------------
+Local Variables 
+------------------------------------------------------------------------------*/
+uint8_t    tx_byte;     /* Byte to transmit with wireless module */
+USB_STATUS usb_status;  /* Status of USB module               */
+RF_STATUS  rf_status;   /* Status of wireless module          */
+
+
+/*------------------------------------------------------------------------------
 MCU Initialization                                                                  
 ------------------------------------------------------------------------------*/
 HAL_Init();             /* CMSIS HAL */
@@ -73,9 +86,47 @@ Event Loop
 ------------------------------------------------------------------------------*/
 while (1)
 	{
+	/* Receive byte from USB port */
+	usb_status = usb_receive( &tx_byte         , 
+                              sizeof( uint8_t ), 
+                              HAL_DEFAULT_TIMEOUT );
+
+	/* Transmit byte with wireless module */
+	if ( usb_status != USB_TIMEOUT )
+		{
+		switch ( wireless_mod )
+			{
+			case XBEE:
+				{
+				rf_status = rf_xbee_transmit_byte( tx_byte );
+				if ( rf_status != RF_OK )
+					{
+					Error_Handler();
+					}
+				break;
+				}
+			case LORA:
+				{
+				// TODO: Implement lora transmit byte function
+				// TODO: Get rid of Error_Handler()
+				Error_Handler();
+				break;
+				}
+			default:
+				{
+				/* Unrecognized wireless module, invoke error handler */
+				Error_Handler();
+				break;
+				}
+			}
+		}
+	else
+		{
+		/* USB timeout, do noting until next byte arrives */
+		}
 	}
 
-} /* main() */
+} /* main */
 
 
 /*******************************************************************************

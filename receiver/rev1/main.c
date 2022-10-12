@@ -40,6 +40,7 @@ UART_HandleTypeDef huart1; /* USB UART  */
 /* Wireless Module Settings */
 WIRELESS_MOD_CODES wireless_mod = XBEE;
 
+
 /*------------------------------------------------------------------------------
 Typedefs                                                                  
 ------------------------------------------------------------------------------*/
