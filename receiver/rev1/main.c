@@ -24,6 +24,9 @@ Project Includes
 #include "sdr_pin_defines_A0005_rev1.h"
 
 /* SDR Modules */
+#include "led.h"
+#include "usb.h"
+#include "wireless.h"
 
 
 /*------------------------------------------------------------------------------

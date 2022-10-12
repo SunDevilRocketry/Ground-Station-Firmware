@@ -1,18 +1,17 @@
 /*******************************************************************************
 *
 * FILE: 
-* 		wireless.h
+* 		usb.h
 *
 * DESCRIPTION: 
-* 		Contains API functions to transmit data wirelessly using the XBee and 
-*       and LoRa modules 
+* 		Contains API functions to transmit data over USB 
 *
 *******************************************************************************/
 
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef WIRELESS_H
-#define WIRELESS_H
+#ifndef USB_H
+#define USB_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -23,18 +22,17 @@ extern "C" {
 ------------------------------------------------------------------------------*/
 
 /* Function return codes */
-typedef enum RF_STATUS
+typedef enum USB_STATUS
 	{
-	RF_OK = 0,
-    RF_FAIL  ,
-	RF_TIMEOUT
-	} RF_STATUS;
+	USB_OK = 0,
+    USB_FAIL  ,
+	USB_TIMEOUT
+	} USB_STATUS;
 
 
 /*------------------------------------------------------------------------------
  Macros 
 ------------------------------------------------------------------------------*/
-#define RF_TIMEOUT		( 1 )
 
 
 /*------------------------------------------------------------------------------
@@ -42,20 +40,25 @@ typedef enum RF_STATUS
 ------------------------------------------------------------------------------*/
 
 
-/* transmits a byte wirelessly using the xbee module */
-RF_STATUS rf_xbee_transmit_byte 
+/* transmits bytes over USB */
+USB_STATUS usb_transmit 
 	(
-    uint8_t tx_byte	
+    void*   p_tx_data   , /* Data to be sent       */	
+	size_t  tx_data_size, /* Size of transmit data */ 
+	uint8_t timeout       /* UART timeout          */
 	);
 
 
-/* Receives a byte from the xbee module */
-RF_STATUS rf_xbee_receive_byte 
+/* Receives bytes from the USB port */
+USB_STATUS usb_receive 
 	(
-	uint8_t* p_rx_byte	
+	void*   p_rx_data   , /* Buffer to export data to        */
+	size_t  rx_data_size, /* Size of the data to be received */
+	uint8_t timeout       /* UART timeout */
 	);
 
-#endif /* WIRELESS_H */
+
+#endif /* USB_H */
 
 
 /*******************************************************************************

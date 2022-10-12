@@ -1,11 +1,10 @@
 /*******************************************************************************
 *
 * FILE: 
-* 		wireless.c
+* 		usb.c
 *
 * DESCRIPTION: 
-* 		Contains API functions to transmit data wirelessly using the XBee and 
-*       and LoRa modules 
+* 		Contains API functions to transmit data over USB 
 *
 *******************************************************************************/
 
@@ -15,17 +14,18 @@
 ------------------------------------------------------------------------------*/
 #include "sdr_pin_defines_A0005_rev1.h"
 
+
 /*------------------------------------------------------------------------------
  Project Includes                                                                     
 ------------------------------------------------------------------------------*/
 #include "main.h"
-#include "wireless.h"
+#include "usb.h"
 
 
 /*------------------------------------------------------------------------------
 Global Variables                                                                  
 ------------------------------------------------------------------------------*/
-extern UART_HandleTypeDef huart4; /* Xbee UART */
+extern UART_HandleTypeDef huart1; /* USB UART  */
 
 
 /*------------------------------------------------------------------------------
@@ -36,21 +36,23 @@ extern UART_HandleTypeDef huart4; /* Xbee UART */
 /*******************************************************************************
 *                                                                              *
 * PROCEDURE:                                                                   * 
-* 		rf_xbee_transmit_byte                                                  *
+* 		usb_transmit_bytes                                                     *
 *                                                                              *
 * DESCRIPTION:                                                                 * 
-* 		transmits a byte wirelessly using the xbee module                      *
+* 		transmits bytes over USB                                               *
 *                                                                              *
 *******************************************************************************/
-RF_STATUS rf_xbee_transmit_byte 
+USB_STATUS usb_transmit 
 	(
-    uint8_t tx_byte	
+    void*   p_tx_data   , /* Data to be sent       */	
+	size_t  tx_data_size, /* Size of transmit data */ 
+	uint8_t timeout       /* UART timeout          */
 	)
 {
 /*------------------------------------------------------------------------------
  Local Variables
 ------------------------------------------------------------------------------*/
-HAL_StatusTypeDef xbee_status;
+HAL_StatusTypeDef usb_status;
 
 
 /*------------------------------------------------------------------------------
@@ -58,42 +60,44 @@ HAL_StatusTypeDef xbee_status;
 ------------------------------------------------------------------------------*/
 
 /* Transmit byte */
-xbee_status = HAL_UART_Transmit( &huart4 ,
-                                 &tx_byte, 
-                                 sizeof( tx_byte ), 
-                                 RF_TIMEOUT );
+usb_status = HAL_UART_Transmit( &huart1     ,
+                                p_tx_data   , 
+                                tx_data_size, 
+                                timeout );
 
 /* Return HAL status */
-if ( xbee_status != HAL_OK )
+if ( usb_status != HAL_OK )
 	{
-	return xbee_status;
+	return usb_status;
 	}
 else
 	{
-	return RF_OK;
+	return USB_OK;
 	}
 
-} /* rf_xbee_transmit_byte */
+} /* usb_transmit */
 
 
 /*******************************************************************************
 *                                                                              *
 * PROCEDURE:                                                                   * 
-* 		rf_xbee_receieve_byte                                                  *
+* 		usb_receieve                                                           *
 *                                                                              *
 * DESCRIPTION:                                                                 * 
-* 		Receives a byte from the xbee module                                   *
+* 	    Receives bytes from the USB port                                       *	
 *                                                                              *
 *******************************************************************************/
-RF_STATUS rf_xbee_receive_byte 
+USB_STATUS usb_receive 
 	(
-	uint8_t* p_rx_byte	
+	void*   p_rx_data   , /* Buffer to export data to        */
+	size_t  rx_data_size, /* Size of the data to be received */
+	uint8_t timeout       /* UART timeout */
 	)
 {
 /*------------------------------------------------------------------------------
  Local Variables
 ------------------------------------------------------------------------------*/
-HAL_StatusTypeDef xbee_status;
+HAL_StatusTypeDef usb_status;
 
 
 /*------------------------------------------------------------------------------
@@ -101,32 +105,32 @@ HAL_StatusTypeDef xbee_status;
 ------------------------------------------------------------------------------*/
 
 /* Transmit byte */
-xbee_status = HAL_UART_Receive( &huart4          ,
-                                p_rx_byte        , 
-                                sizeof( uint8_t ), 
-                                RF_TIMEOUT );
+usb_status = HAL_UART_Receive( &huart1      ,
+                               p_rx_data    , 
+                               rx_data_size , 
+                               timeout );
 
 /* Return HAL status */
-switch ( xbee_status )
+switch ( usb_status )
 	{
 	case HAL_TIMEOUT:
 		{
-		return RF_TIMEOUT;
+		return USB_TIMEOUT;
 		break;
 		}
 	case HAL_OK:
 		{
-		return RF_OK;
+		return USB_OK;
 		break;
 		}
 	default:
 		{
-		return RF_FAIL;
+		return USB_FAIL;
 		break;
         }
 	}
 
-} /* rf_xbee_transmit_byte */
+} /* usb_receive */
 
 
 /*******************************************************************************

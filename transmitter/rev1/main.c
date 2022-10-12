@@ -25,6 +25,7 @@ Project Includes
 
 /* SDR Modules */
 #include "led.h"
+#include "usb.h"
 #include "wireless.h"
 
 
