@@ -27,6 +27,9 @@ BUILD_DIR = build
 # Library Directory
 LIB_DIR = ../../lib
 
+# Module Path
+MOD_DIR = ../../mod
+
 ######################################
 # source
 ######################################
@@ -55,7 +58,8 @@ $(LIB_DIR)Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_i2c.c      \
 $(LIB_DIR)Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_i2c_ex.c   \
 $(LIB_DIR)Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_exti.c     \
 $(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart.c    \
-$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart_ex.c
+$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart_ex.c \
+$(MOD_DIR)/led/led.c
 
 
 # ASM sources
@@ -116,6 +120,7 @@ C_INCLUDES =                                           \
 -I.                                                    \
 -Iconfig/Inc                                           \
 -I$(LIB_DIR)                                           \
+-I$(MOD_DIR)/led                                       \
 -I$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Inc          \
 -I$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Inc/Legacy   \
 -I$(LIB_DIR)/Drivers/CMSIS/Device/ST/STM32H7xx/Include \

@@ -24,6 +24,7 @@ Project Includes
 #include "sdr_pin_defines_A0005_rev1.h"
 
 /* SDR Modules */
+#include "led.h"
 
 
 /*------------------------------------------------------------------------------
@@ -296,13 +297,19 @@ HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 * 		This function is executed in case of error occurrence                  *
 *                                                                              *
 *******************************************************************************/
-void Error_Handler(void)
+void Error_Handler
+	(
+	void
+	)
 {
-  /* User can add his own implementation to report the HAL error return state */
-  __disable_irq();
-  while (1)
-  {
-  }
+/* User can add his own implementation to report the HAL error return state */
+__disable_irq();
+led_error_assert();
+
+while (1)
+	{
+	/* Application Hangs when a failure occurs */
+	}
 }
 
 #ifdef  USE_FULL_ASSERT
