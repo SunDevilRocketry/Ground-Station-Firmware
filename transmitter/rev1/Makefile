@@ -59,7 +59,8 @@ $(LIB_DIR)Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_i2c_ex.c   \
 $(LIB_DIR)Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_exti.c     \
 $(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart.c    \
 $(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart_ex.c \
-$(MOD_DIR)/led/led.c
+$(MOD_DIR)/led/led.c                                                \
+$(MOD_DIR)/wireless/wireless.c
 
 
 # ASM sources
@@ -121,6 +122,7 @@ C_INCLUDES =                                           \
 -Iconfig/Inc                                           \
 -I$(LIB_DIR)                                           \
 -I$(MOD_DIR)/led                                       \
+-I$(MOD_DIR)/wireless                                  \
 -I$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Inc          \
 -I$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Inc/Legacy   \
 -I$(LIB_DIR)/Drivers/CMSIS/Device/ST/STM32H7xx/Include \

@@ -108,7 +108,7 @@ xbee_status = HAL_UART_Receive( &huart4          ,
                                 RF_TIMEOUT );
 
 /* Return HAL status */
-switch ( xbee_staus )
+switch ( xbee_status )
 	{
 	case HAL_TIMEOUT:
 		{
