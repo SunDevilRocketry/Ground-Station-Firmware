@@ -2,3 +2,6 @@
 blink/rev1/build
 transmitter/rev1/build
 receiver/rev1/build
+
+# VScode artifacts
+.vscode/*

@@ -21,7 +21,7 @@ Project Includes
 
 /* Pin definitions and main prototypes */
 #include "main.h"
-#include "sdr_pin_defines_A0005_rev1.h"
+#include "sdr_pin_defines_A0005.h"
 
 /* SDR Modules */
 
