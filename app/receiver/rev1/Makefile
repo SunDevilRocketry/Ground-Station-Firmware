@@ -30,15 +30,18 @@ LIB_DIR = ../../../lib
 # Module Path
 MOD_DIR = ../../../mod
 
+# MCU Initialization Directory
+INIT_DIR = ../../../init
+
 ######################################
 # source
 ######################################
 # C sources
 C_SOURCES =                                                         \
 main.c                                                              \
-config/Src/stm32h7xx_it.c                                           \
-config/Src/stm32h7xx_hal_msp.c                                      \
-config/Src/system_stm32h7xx.c                                       \
+$(INIT_DIR)/config/Src/stm32h7xx_it.c                               \
+$(INIT_DIR)/config/Src/stm32h7xx_hal_msp.c                          \
+$(INIT_DIR)/config/Src/system_stm32h7xx.c                           \
 $(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_cortex.c  \
 $(LIB_DIR)Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_tim.c      \
 $(LIB_DIR)Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_tim_ex.c   \
@@ -121,7 +124,8 @@ AS_INCLUDES =
 # C includes
 C_INCLUDES =                                           \
 -I.                                                    \
--Iconfig/Inc                                           \
+-I$(INIT_DIR)                                          \
+-I$(INIT_DIR)/config/Inc                               \
 -I$(LIB_DIR)                                           \
 -I$(MOD_DIR)/led                                       \
 -I$(MOD_DIR)/wireless                                  \

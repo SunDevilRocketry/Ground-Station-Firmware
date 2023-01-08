@@ -27,16 +27,19 @@ BUILD_DIR = build
 # Library Directory
 LIB_DIR = ../../../lib
 
+# MCU Initialization Directory
+INIT_DIR = ../../../init
+
 ######################################
 # source
 ######################################
 # C sources
-C_SOURCES =                                                         \
-main.c                                                              \
-config/Src/stm32h7xx_it.c                                           \
-config/Src/stm32h7xx_hal_msp.c                                      \
-config/Src/system_stm32h7xx.c                                       \
-$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_cortex.c  \
+C_SOURCES =                                                          \
+main.c                                                               \
+$(INIT_DIR)/config/Src/stm32h7xx_it.c                                \
+$(INIT_DIR)/config/Src/stm32h7xx_hal_msp.c                           \
+$(INIT_DIR)/config/Src/system_stm32h7xx.c                            \
+$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_cortex.c   \
 $(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_tim.c      \
 $(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_tim_ex.c   \
 $(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rcc.c      \
@@ -113,7 +116,8 @@ AS_INCLUDES =
 # C includes
 C_INCLUDES =                                           \
 -I.                                                    \
--Iconfig/Inc                                           \
+-I$(INIT_DIR)                                          \
+-I$(INIT_DIR)/config/Inc                               \
 -I$(LIB_DIR)                                           \
 -I$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Inc          \
 -I$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Inc/Legacy   \
