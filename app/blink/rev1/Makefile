@@ -25,7 +25,7 @@ OPT = -Og
 BUILD_DIR = build
 
 # Library Directory
-LIB_DIR = ../../lib
+LIB_DIR = ../../../lib
 
 ######################################
 # source
