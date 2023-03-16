@@ -1,26 +1,29 @@
-#-------------------------------------------------
+# --------------------------------------------------------------
 # Blink Makefile (based on gcc)
 #
-# ------------------------------------------------
+# --------------------------------------------------------------
 
-######################################
+################################################################
 # target
-######################################
+################################################################
 TARGET = blink
 
 
-######################################
+################################################################
 # building variables
-######################################
+################################################################
+
 # debug build?
 DEBUG = 1
+
 # optimization
 OPT = -Og
 
 
-#######################################
+################################################################
 # paths
-#######################################
+################################################################
+
 # Build path
 BUILD_DIR = build
 
@@ -30,15 +33,26 @@ LIB_DIR = ../../../lib
 # MCU Initialization Directory
 INIT_DIR = ../../../init
 
-######################################
+# SDR Module directory
+MOD_DIR = ../../../mod
+
+# Utilties directory
+UTIL_DIR = $(LIB_DIR)/util
+
+
+################################################################
 # source
-######################################
+################################################################
+
 # C sources
 C_SOURCES =                                                          \
 main.c                                                               \
+$(INIT_DIR)/init.c                                                   \
+$(UTIL_DIR)/sdr_error.c                                              \
 $(INIT_DIR)/config/Src/stm32h7xx_it.c                                \
 $(INIT_DIR)/config/Src/stm32h7xx_hal_msp.c                           \
 $(INIT_DIR)/config/Src/system_stm32h7xx.c                            \
+$(MOD_DIR)/led/led.c                                                 \
 $(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_cortex.c   \
 $(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_tim.c      \
 $(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_tim_ex.c   \
@@ -107,6 +121,7 @@ AS_DEFS =
 # C defines
 C_DEFS =  \
 -DUSE_HAL_DRIVER \
+-DGROUND_STATION \
 -DSTM32H750xx
 
 
@@ -119,6 +134,8 @@ C_INCLUDES =                                           \
 -I$(INIT_DIR)                                          \
 -I$(INIT_DIR)/config/Inc                               \
 -I$(LIB_DIR)                                           \
+-I$(MOD_DIR)/led                                       \
+-I$(UTIL_DIR)                                          \
 -I$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Inc          \
 -I$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Inc/Legacy   \
 -I$(LIB_DIR)/Drivers/CMSIS/Device/ST/STM32H7xx/Include \

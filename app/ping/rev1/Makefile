@@ -44,6 +44,8 @@ UTIL_DIR = $(LIB_DIR)/util
 # C sources
 C_SOURCES =                                                         \
 main.c                                                              \
+$(INIT_DIR)/init.c                                                  \
+$(UTIL_DIR)/sdr_error.c                                             \
 $(INIT_DIR)/config/Src/stm32h7xx_it.c                               \
 $(INIT_DIR)/config/Src/stm32h7xx_hal_msp.c                          \
 $(INIT_DIR)/config/Src/system_stm32h7xx.c                           \
