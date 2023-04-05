@@ -24,6 +24,9 @@ while True:
 	
 	# Print to screen
 	#time = time_ticks/1000.0
-	data = serObj.read().decode('ascii')
-	print( data )
+	data = serObj.read()
+	if ( data == b'' ):
+		print( "No data received. Trying Again ... " )
+	else:
+		print( data.decode( 'ascii' ) )
 

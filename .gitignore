@@ -1,7 +1,9 @@
 # Build Directories
-blink/rev1/build
-transmitter/rev1/build
-receiver/rev1/build
+app/blink/rev1/build
+app/transmitter/rev1/build
+app/receiver/rev1/build
+app/ping/rev1/build
+
 
 # VScode artifacts
 .vscode/*

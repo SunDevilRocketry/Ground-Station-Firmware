@@ -231,7 +231,7 @@ HAL_GPIO_WritePin( STATUS_GPIO_PORT,
 			       STATUS_R_PIN      |
 		           STATUS_G_PIN      |
                    STATUS_B_PIN    , 
-				   GPIO_PIN_RESET );
+				   GPIO_PIN_SET );
 
 /*Configure GPIO pins : PE10 PE11 PE12 */
 GPIO_InitStruct.Pin   = STATUS_R_PIN |
