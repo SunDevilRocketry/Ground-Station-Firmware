@@ -245,6 +245,18 @@ GPIO_InitStruct.Pull  = GPIO_NOPULL;
 GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
 HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
+/*--------------------------- XBEE MCU PINS ----------------------------------*/
+
+/* Configure Output Level */
+HAL_GPIO_WritePin( XBEE_RST_GPIO_PORT, XBEE_RST_PIN, GPIO_PIN_SET );
+
+/* Configure Pin Settings */
+GPIO_InitStruct.Pin   = XBEE_RST_PIN;
+GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_OD;
+GPIO_InitStruct.Pull  = GPIO_NOPULL;
+GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+HAL_GPIO_Init( XBEE_RST_GPIO_PORT, &GPIO_InitStruct );
+
 } /* GPIO_Init */
 
 /*******************************************************************************
