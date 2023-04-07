@@ -34,6 +34,9 @@ Standard Includes
 /* General HAL related macros */
 #define HAL_DEFAULT_TIMEOUT		( 1 )
 
+/* Ping timeout */
+#define PING_TIMEOUT            ( 2000 ) /* ms */
+
 /*------------------------------------------------------------------------------
 Project Includes                                                                     
 ------------------------------------------------------------------------------*/

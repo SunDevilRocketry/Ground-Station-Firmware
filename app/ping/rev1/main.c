@@ -56,6 +56,8 @@ int main
 uint8_t    rx_byte;     /* Byte recieved from Wireless module */
 USB_STATUS usb_status;  /* Status of USB module               */
 RF_STATUS  rf_status;   /* Status of wireless module          */
+uint32_t   time;        /* Time for initial ping timeout      */
+uint32_t   start_time;  /* Starting time for timeout counter  */
 
 
 /*------------------------------------------------------------------------------
@@ -75,10 +77,20 @@ USB_UART_Init     ();   /* USB       */
 
 
 /*------------------------------------------------------------------------------
+ Initial Setup 
+------------------------------------------------------------------------------*/
+start_time = HAL_GetTick();
+time       = HAL_GetTick() - start_time;
+
+
+/*------------------------------------------------------------------------------
  Event Loop                                                                  
 ------------------------------------------------------------------------------*/
 while (1)
 	{
+	/* Update timeout counter */
+	time = HAL_GetTick() - start_time; 
+
 	/* Poll the wireless module for incoming data */
 	rf_status = rf_xbee_receive_byte( &rx_byte ); 
 
@@ -103,6 +115,17 @@ while (1)
 			Error_Handler( ERROR_USB_UART_ERROR );
 			}
 		} /* if ( rf_status != RF_TIMEOUT ) */
+
+	/* Send out a ping if a ping hasn't been receieved recently */
+	if ( time >= PING_TIMEOUT )
+		{
+		rf_status = rf_xbee_transmit_byte( PING_OP );
+		if ( rf_status != RF_OK )
+			{
+			Error_Handler( ERROR_RF_ERROR );
+			}
+		}
+		start_time = HAL_GetTick();
 	}
 } /* main */
 
