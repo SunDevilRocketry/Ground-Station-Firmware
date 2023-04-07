@@ -33,6 +33,9 @@ MOD_DIR = ../../../mod
 # Initialization Directory
 INIT_DIR = ../../../init
 
+# Utitlities Directory
+UTIL_DIR = $(LIB_DIR)/util
+
 ######################################
 # source
 ######################################
@@ -43,6 +46,7 @@ $(INIT_DIR)/config/Src/stm32h7xx_it.c                               \
 $(INIT_DIR)/config/Src/stm32h7xx_hal_msp.c                          \
 $(INIT_DIR)/config/Src/system_stm32h7xx.c                           \
 $(INIT_DIR)/init.c                                                  \
+$(UTIL_DIR)/sdr_error.c                                             \
 $(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_cortex.c  \
 $(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_tim.c      \
 $(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_tim_ex.c   \
@@ -126,6 +130,7 @@ AS_INCLUDES =
 C_INCLUDES =                                           \
 -I.                                                    \
 -I$(INIT_DIR)                                          \
+-I$(UTIL_DIR)                                          \
 -I$(INIT_DIR)/config/Inc                               \
 -I$(LIB_DIR)                                           \
 -I$(MOD_DIR)/led                                       \

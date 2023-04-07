@@ -20,6 +20,7 @@
 #include "sdr_pin_defines_A0005.h"
 #include "main.h"
 #include "init.h"
+#include "sdr_error.h"
 
 
 /*------------------------------------------------------------------------------
@@ -82,7 +83,7 @@ RCC_OscInitStruct.PLL.PLLVCOSEL  = RCC_PLL1VCOWIDE;
 RCC_OscInitStruct.PLL.PLLFRACN   = 0;
 if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
 	{
-	Error_Handler();
+	Error_Handler( ERROR_SYSCLOCK_CONFIG_ERROR );
 	}
 
 /* Initializes the CPU, AHB and APB buses clocks */
@@ -103,7 +104,7 @@ RCC_ClkInitStruct.APB4CLKDivider = RCC_APB4_DIV2;
 /* Set the configuration */
 if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_4) != HAL_OK)
 	{
-	Error_Handler();
+	Error_Handler( ERROR_SYSCLOCK_CONFIG_ERROR );
 	}
 } /* SystemClock_Config */
 
@@ -138,19 +139,19 @@ huart4.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
 /* Apply configuration */
 if (HAL_UART_Init(&huart4) != HAL_OK)
 	{
-	Error_Handler();
+	Error_Handler( ERROR_XBEE_UART_CONFIG_ERROR );
 	}
 if (HAL_UARTEx_SetTxFifoThreshold(&huart4, UART_TXFIFO_THRESHOLD_1_8) != HAL_OK)
 	{
-	Error_Handler();
+	Error_Handler( ERROR_XBEE_UART_CONFIG_ERROR );
 	}
 if (HAL_UARTEx_SetRxFifoThreshold(&huart4, UART_RXFIFO_THRESHOLD_1_8) != HAL_OK)
 	{
-	Error_Handler();
+	Error_Handler( ERROR_XBEE_UART_CONFIG_ERROR );
 	}
 if (HAL_UARTEx_DisableFifoMode(&huart4) != HAL_OK)
 	{
-	Error_Handler();
+	Error_Handler( ERROR_XBEE_UART_CONFIG_ERROR );
 	}
 
 } /* XBee_UART_Init() */
@@ -187,19 +188,19 @@ huart1.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
 /* Apply configuration */
 if (HAL_UART_Init(&huart1) != HAL_OK)
 	{
-	Error_Handler();
+	Error_Handler( ERROR_USB_UART_INIT_ERROR );
 	}
 if (HAL_UARTEx_SetTxFifoThreshold(&huart1, UART_TXFIFO_THRESHOLD_1_8) != HAL_OK)
 	{
-	Error_Handler();
+	Error_Handler( ERROR_USB_UART_INIT_ERROR );
 	}
 if (HAL_UARTEx_SetRxFifoThreshold(&huart1, UART_RXFIFO_THRESHOLD_1_8) != HAL_OK)
 	{
-	Error_Handler();
+	Error_Handler( ERROR_USB_UART_INIT_ERROR );
 	}
 if (HAL_UARTEx_DisableFifoMode(&huart1) != HAL_OK)
 	{
-	Error_Handler();
+	Error_Handler( ERROR_USB_UART_INIT_ERROR );
 	}
 
 } /*  USB_UART_Init() */
@@ -247,15 +248,20 @@ HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
 /*--------------------------- XBEE MCU PINS ----------------------------------*/
 
-/* Configure Output Level */
+/* XBEE_RST Pin */
 HAL_GPIO_WritePin( XBEE_RST_GPIO_PORT, XBEE_RST_PIN, GPIO_PIN_SET );
-
-/* Configure Pin Settings */
 GPIO_InitStruct.Pin   = XBEE_RST_PIN;
 GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_OD;
-GPIO_InitStruct.Pull  = GPIO_NOPULL;
+GPIO_InitStruct.Pull  = GPIO_PULLUP;
 GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
 HAL_GPIO_Init( XBEE_RST_GPIO_PORT, &GPIO_InitStruct );
+
+/* XBEE_SLEEP Pin */
+GPIO_InitStruct.Pin   = XBEE_SLEEP_PIN;
+GPIO_InitStruct.Mode  = GPIO_MODE_INPUT;
+GPIO_InitStruct.Pull  = GPIO_PULLUP;
+GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+HAL_GPIO_Init( XBEE_SLEEP_GPIO_PORT, &GPIO_InitStruct );
 
 } /* GPIO_Init */
 

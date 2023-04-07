@@ -23,6 +23,7 @@ Project Includes
 #include "main.h"
 #include "init.h"
 #include "sdr_pin_defines_A0005.h"
+#include "sdr_error.h"
 
 /* SDR Modules */
 #include "led.h"
@@ -85,13 +86,13 @@ while (1)
 			{
 			// TODO: Implement rf_lora_receive_byte function 
 			// TODO: Remove Error_Handler()
-			Error_Handler();
+			Error_Handler( ERROR_RF_ERROR );
 			break;	
 			}
 		default:
 			{
 			/* Unrecognized module: invoke error handler */
-			Error_Handler();
+			Error_Handler( ERROR_RF_ERROR );
 			break;
 			}
 		}
@@ -104,7 +105,7 @@ while (1)
                                    HAL_DEFAULT_TIMEOUT  );
 		if ( usb_status != USB_OK )
 			{
-			Error_Handler();
+			Error_Handler( ERROR_USB_UART_ERROR );
 			}
 		}
 	else
@@ -115,44 +116,6 @@ while (1)
 	}
 
 } /* main */
-
-
-
-
-/*******************************************************************************
-*                                                                              *
-* PROCEDURE:                                                                   *
-*       Error_Handler                                                          * 
-*                                                                              *
-* DESCRIPTION:                                                                 * 
-* 		This function is executed in case of error occurrence                  *
-*                                                                              *
-*******************************************************************************/
-void Error_Handler(void)
-{
-  /* User can add his own implementation to report the HAL error return state */
-  __disable_irq();
-  while (1)
-  {
-  }
-}
-
-#ifdef  USE_FULL_ASSERT
-/**
-  * @brief  Reports the name of the source file and the source line number
-  *         where the assert_param error has occurred.
-  * @param  file: pointer to the source file name
-  * @param  line: assert_param error line source number
-  * @retval None
-  */
-void assert_failed
-	(
-	uint8_t *file, 
-	uint32_t line
-	)
-{
-}
-#endif /* USE_FULL_ASSERT */
 
 
 /*******************************************************************************

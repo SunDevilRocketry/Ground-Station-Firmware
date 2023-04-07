@@ -14,6 +14,7 @@
 Standard Includes                                                                     
 ------------------------------------------------------------------------------*/
 #include "main.h"
+#include "sdr_error.h"
 
 
 /*******************************************************************************
@@ -59,7 +60,7 @@ if(huart->Instance==UART4)
 	PeriphClkInitStruct.Usart234578ClockSelection = RCC_USART234578CLKSOURCE_D2PCLK1;
 	if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
 		{
-		  Error_Handler();
+		Error_Handler( ERROR_UART_HAL_MSP_ERROR );
 		}
 
 	/* Peripheral clock enable */
@@ -86,7 +87,7 @@ else if(huart->Instance==USART1)
 	PeriphClkInitStruct.Usart16ClockSelection = RCC_USART16CLKSOURCE_D2PCLK2;
 	if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
 		{
-	  Error_Handler();
+		Error_Handler( ERROR_UART_HAL_MSP_ERROR );
 		}
 
 	/* Peripheral clock enable */

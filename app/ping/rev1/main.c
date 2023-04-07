@@ -4,8 +4,9 @@
 *       main.c
 *
 * DESCRIPTION: 
-*		Transmits data recieved over UART/USB in order to test the wireless 
-*       transcievers
+*		Pings another XBee module and indicates to PC when a ping code has 
+*       received. Used to perform range testing and bidirectional communcation
+*       testing.	
 *
 *******************************************************************************/
 
@@ -19,13 +20,14 @@ Standard Includes
 Project Includes                                                                     
 ------------------------------------------------------------------------------*/
 
-/* Pin definitions and main prototypes */
+/* Pin definitions, main prototypes, error codes */
 #include "main.h"
 #include "init.h"
 #include "sdr_pin_defines_A0005.h"
 #include "sdr_error.h"
 
 /* SDR Modules */
+#include "commands.h"
 #include "led.h"
 #include "usb.h"
 #include "wireless.h"
@@ -39,9 +41,6 @@ Global Variables
 UART_HandleTypeDef huart4; /* Xbee UART */
 UART_HandleTypeDef huart1; /* USB UART  */
 
-/* Wireless Module Settings */
-WIRELESS_MOD_CODES wireless_mod = XBEE;
-
 
 /*------------------------------------------------------------------------------
 Application entry point                                                      
@@ -52,68 +51,59 @@ int main
 	)
 {
 /*------------------------------------------------------------------------------
-Local Variables 
+ Local Variables 
 ------------------------------------------------------------------------------*/
-uint8_t    tx_byte;     /* Byte to transmit with wireless module */
+uint8_t    rx_byte;     /* Byte recieved from Wireless module */
 USB_STATUS usb_status;  /* Status of USB module               */
 RF_STATUS  rf_status;   /* Status of wireless module          */
 
 
 /*------------------------------------------------------------------------------
-MCU Initialization                                                                  
+ Initializations                                                             
 ------------------------------------------------------------------------------*/
-HAL_Init();             /* CMSIS HAL */
-SystemClock_Config();   /* SysClock  */
-GPIO_Init();            /* GPIO Pins */
-XBee_UART_Init();       /* XBee      */
-USB_UART_Init();        /* USB       */
+rx_byte = 0;
 
 
 /*------------------------------------------------------------------------------
-Event Loop                                                                  
+ MCU Initialization                                                             
+------------------------------------------------------------------------------*/
+HAL_Init          ();   /* CMSIS HAL */
+SystemClock_Config();   /* SysClock  */
+GPIO_Init         ();   /* GPIO Pins */
+XBee_UART_Init    ();   /* XBee      */
+USB_UART_Init     ();   /* USB       */
+
+
+/*------------------------------------------------------------------------------
+ Event Loop                                                                  
 ------------------------------------------------------------------------------*/
 while (1)
 	{
-	/* Receive byte from USB port */
-	usb_status = usb_receive( &tx_byte         , 
-                              sizeof( uint8_t ), 
-                              HAL_DEFAULT_TIMEOUT );
+	/* Poll the wireless module for incoming data */
+	rf_status = rf_xbee_receive_byte( &rx_byte ); 
 
-	/* Transmit byte with wireless module */
-	if ( usb_status != USB_TIMEOUT )
+	/* Received byte */
+	if ( rf_status != RF_TIMEOUT )
 		{
-		switch ( wireless_mod )
+		/* Correct byte? */
+		if ( rx_byte != PING_OP )
 			{
-			case XBEE:
-				{
-				rf_status = rf_xbee_transmit_byte( tx_byte );
-				if ( rf_status != RF_OK )
-					{
-					Error_Handler( ERROR_RF_ERROR );
-					}
-				break;
-				}
-			case LORA:
-				{
-				// TODO: Implement lora transmit byte function
-				// TODO: Get rid of Error_Handler()
-				Error_Handler( ERROR_RF_ERROR );
-				break;
-				}
-			default:
-				{
-				/* Unrecognized wireless module, invoke error handler */
-				Error_Handler( ERROR_RF_ERROR );
-				break;
-				}
+			Error_Handler( ERROR_RF_UNRECOGNIZED_PING );
 			}
-		}
-	else
-		{
-		/* USB timeout, do noting until next byte arrives */
-		}
-	}
 
+		/* Send a ping to the other wireless module */
+		rf_xbee_transmit_byte( PING_OP );
+
+		/* Tell PC a ping has been received */
+	    usb_status = usb_transmit( &rx_byte         , 
+                                   sizeof( uint8_t ),
+                                   HAL_DEFAULT_TIMEOUT  );
+		if ( usb_status != USB_OK )
+			{
+			Error_Handler( ERROR_USB_UART_ERROR );
+			}
+		} /* if ( rf_status != RF_TIMEOUT ) */
+	}
 } /* main */
 
 

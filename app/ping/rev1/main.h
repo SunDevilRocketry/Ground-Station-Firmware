@@ -4,8 +4,9 @@
 *       main.h
 *
 * DESCRIPTION: 
-*		Transmits data recieved over UART/USB in order to test the wireless 
-*       transcievers
+*		Pings another XBee module and indicates to PC when a ping code has 
+*       received. Used to perform range testing and bidirectional communcation
+*       testing.	
 *
 *******************************************************************************/
 
@@ -23,6 +24,7 @@ extern "C" {
 Standard Includes                                                                     
 ------------------------------------------------------------------------------*/
 #include "stm32h7xx_hal.h"
+#include "sdr_error.h"
 
 
 /*------------------------------------------------------------------------------
@@ -36,6 +38,13 @@ Standard Includes
 Project Includes                                                                     
 ------------------------------------------------------------------------------*/
 
+/* Exported functions prototypes ---------------------------------------------*/
+
+/* Handles miscellaneous errors */
+void Error_Handler
+    ( 
+    volatile ERROR_CODE error_code 
+    );
 
 /* Private defines -----------------------------------------------------------*/
 
@@ -44,7 +53,3 @@ Project Includes
 #endif
 
 #endif /* __MAIN_H */
-
-/*******************************************************************************
-* END OF FILE                                                                  *
-*******************************************************************************/
