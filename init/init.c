@@ -235,7 +235,7 @@ HAL_GPIO_WritePin( STATUS_GPIO_PORT,
 			       STATUS_R_PIN      |
 		           STATUS_G_PIN      |
                    STATUS_B_PIN    , 
-				   GPIO_PIN_RESET );
+				   GPIO_PIN_SET );
 
 /*Configure GPIO pins : PE10 PE11 PE12 */
 GPIO_InitStruct.Pin   = STATUS_R_PIN |
@@ -262,6 +262,25 @@ GPIO_InitStruct.Mode  = GPIO_MODE_INPUT;
 GPIO_InitStruct.Pull  = GPIO_PULLUP;
 GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
 HAL_GPIO_Init( XBEE_SLEEP_GPIO_PORT, &GPIO_InitStruct );
+
+/* XBEE RTS signal */
+/*
+HAL_GPIO_WritePin( XBEE_RTS_GPIO_PORT, XBEE_RTS_PIN, GPIO_PIN_SET );
+GPIO_InitStruct.Pin   = XBEE_RTS_PIN;
+GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
+GPIO_InitStruct.Pull  = GPIO_NOPULL;
+GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+HAL_GPIO_Init( XBEE_RTS_GPIO_PORT, &GPIO_InitStruct );
+*/
+
+/* XBEE CTS Signal */
+/*
+GPIO_InitStruct.Pin = XBEE_CTS_PIN;
+GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+GPIO_InitStruct.Pull = GPIO_NOPULL;
+GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+HAL_GPIO_Init( XBEE_CTS_GPIO_PORT, &GPIO_InitStruct );
+*/
 
 } /* GPIO_Init */
 

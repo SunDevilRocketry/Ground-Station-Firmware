@@ -53,17 +53,19 @@ int main
 /*------------------------------------------------------------------------------
  Local Variables 
 ------------------------------------------------------------------------------*/
-uint8_t    rx_byte;     /* Byte recieved from Wireless module */
-USB_STATUS usb_status;  /* Status of USB module               */
-RF_STATUS  rf_status;   /* Status of wireless module          */
-uint32_t   time;        /* Time for initial ping timeout      */
-uint32_t   start_time;  /* Starting time for timeout counter  */
+uint8_t    rx_byte;     /* Byte recieved from Wireless module  */
+USB_STATUS usb_status;  /* Status of USB module                */
+RF_STATUS  rf_status;   /* Status of wireless module           */
+uint32_t   time;        /* Time for initial ping timeout       */
+uint32_t   start_time;  /* Starting time for timeout counter   */
+uint32_t   timeout_cnt; /* Number of times ping has timeed out */
 
 
 /*------------------------------------------------------------------------------
  Initializations                                                             
 ------------------------------------------------------------------------------*/
-rx_byte = 0;
+rx_byte     = 0;
+timeout_cnt = 0;
 
 
 /*------------------------------------------------------------------------------
@@ -82,6 +84,9 @@ USB_UART_Init     ();   /* USB       */
 start_time = HAL_GetTick();
 time       = HAL_GetTick() - start_time;
 
+/* Successfuly initialization LED indication */
+led_set_color( LED_GREEN );
+
 
 /*------------------------------------------------------------------------------
  Event Loop                                                                  
@@ -98,18 +103,20 @@ while (1)
 	if ( rf_status != RF_TIMEOUT )
 		{
 		/* Correct byte? */
-		if ( rx_byte != PING_OP )
+		/*
+		if ( rx_byte != PING_CODE )
 			{
 			Error_Handler( ERROR_RF_UNRECOGNIZED_PING );
 			}
+		*/
 
 		/* Send a ping to the other wireless module */
-		rf_xbee_transmit_byte( PING_OP );
+		rf_xbee_transmit_byte( PING_CODE );
 
 		/* Tell PC a ping has been received */
 	    usb_status = usb_transmit( &rx_byte         , 
                                    sizeof( uint8_t ),
-                                   HAL_DEFAULT_TIMEOUT  );
+                                   2 );
 		if ( usb_status != USB_OK )
 			{
 			Error_Handler( ERROR_USB_UART_ERROR );
@@ -119,13 +126,26 @@ while (1)
 	/* Send out a ping if a ping hasn't been receieved recently */
 	if ( time >= PING_TIMEOUT )
 		{
-		rf_status = rf_xbee_transmit_byte( PING_OP );
+		rf_status = rf_xbee_transmit_byte( PING_CODE );
 		if ( rf_status != RF_OK )
 			{
 			Error_Handler( ERROR_RF_ERROR );
 			}
-		}
 		start_time = HAL_GetTick();
+		timeout_cnt++;
+		}
+
+	/* Error out if timeout count is too large */
+	/*
+	if ( timeout_cnt > 10 )
+		{
+		while ( 1 )
+			{
+			led_set_color( LED_BLUE );
+			}
+		}
+	*/
+
 	}
 } /* main */
 

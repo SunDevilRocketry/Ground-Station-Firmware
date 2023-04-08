@@ -5,7 +5,7 @@ import time
 serObj = serial.Serial()
 serObj.baudrate = 9600
 serObj.port = "/dev/ttyUSB0"
-serObj.timeout = 1
+serObj.timeout = 5
 serObj.open()
 
 # Start the timer
@@ -28,5 +28,6 @@ while True:
 	if ( data == b'' ):
 		print( "No data received. Trying Again ... " )
 	else:
-		print( data.decode( 'ascii' ) )
+		print( "Ping Received: ", end="" )
+		print( data )
 

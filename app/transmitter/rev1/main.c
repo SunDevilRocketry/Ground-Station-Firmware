@@ -68,6 +68,9 @@ GPIO_Init();            /* GPIO Pins */
 XBee_UART_Init();       /* XBee      */
 USB_UART_Init();        /* USB       */
 
+/* Indicate Successful Initialization */
+led_set_color( LED_GREEN );
+
 
 /*------------------------------------------------------------------------------
 Event Loop                                                                  
