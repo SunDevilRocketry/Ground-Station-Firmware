@@ -5,7 +5,7 @@ import time
 serObj = serial.Serial()
 serObj.baudrate = 9600
 serObj.port = "/dev/ttyUSB0"
-serObj.timeout = 5
+#serObj.timeout = 5
 serObj.open()
 
 # Start the timer

@@ -36,6 +36,7 @@ void SystemClock_Config( void );
 void GPIO_Init         ( void );
 void XBee_UART_Init    ( void );
 void USB_UART_Init     ( void );
+void RS485_UART_Init   ( void );
 
 
 #ifdef __cplusplus

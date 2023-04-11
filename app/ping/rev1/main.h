@@ -35,7 +35,7 @@ Standard Includes
 #define HAL_DEFAULT_TIMEOUT		( 1 )
 
 /* Ping timeout */
-#define PING_TIMEOUT            ( 2000 ) /* ms */
+#define PING_TIMEOUT            ( 500 ) /* ms */
 #define PING_CODE               0x67
 
 /*------------------------------------------------------------------------------

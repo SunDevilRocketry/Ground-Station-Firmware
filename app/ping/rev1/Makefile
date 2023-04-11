@@ -70,6 +70,7 @@ $(LIB_DIR)Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_exti.c     \
 $(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart.c    \
 $(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart_ex.c \
 $(MOD_DIR)/led/led.c                                                \
+$(MOD_DIR)/rs485/rs485.c                                            \
 $(MOD_DIR)/usb/usb.c                                                \
 $(MOD_DIR)/wireless/wireless.c
 
@@ -124,6 +125,7 @@ AS_DEFS =
 C_DEFS =         \
 -DUSE_HAL_DRIVER \
 -DGROUND_STATION \
+-DUSE_RS485      \
 -DSTM32H750xx
 
 
@@ -139,8 +141,9 @@ C_INCLUDES =                                           \
 -I$(LIB_DIR)                                           \
 -I$(MOD_DIR)/commands                                  \
 -I$(MOD_DIR)/led                                       \
--I$(MOD_DIR)/wireless                                  \
+-I$(MOD_DIR)/rs485                                     \
 -I$(MOD_DIR)/usb                                       \
+-I$(MOD_DIR)/wireless                                  \
 -I$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Inc          \
 -I$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Inc/Legacy   \
 -I$(LIB_DIR)/Drivers/CMSIS/Device/ST/STM32H7xx/Include \

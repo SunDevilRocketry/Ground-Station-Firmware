@@ -79,6 +79,31 @@ if(huart->Instance==UART4)
 	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
 	}
+
+  else if(huart->Instance==UART5)
+	{
+	/* Initializes the peripherals clock */
+	PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_UART5;
+	PeriphClkInitStruct.Usart234578ClockSelection = RCC_USART234578CLKSOURCE_D2PCLK1;
+	if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
+	{
+	Error_Handler( ERROR_UART_HAL_MSP_ERROR );
+	}
+
+	/* Peripheral clock enable */
+	__HAL_RCC_UART5_CLK_ENABLE();
+	__HAL_RCC_GPIOB_CLK_ENABLE();
+
+	/**UART5 GPIO Configuration
+	PB12     ------> UART5_RX
+	PB13     ------> UART5_TX */
+	GPIO_InitStruct.Pin = GPIO_PIN_12|GPIO_PIN_13;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	GPIO_InitStruct.Alternate = GPIO_AF14_UART5;
+	HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+	}
 else if(huart->Instance==USART1)
 	{
 
@@ -134,9 +159,18 @@ if(huart->Instance==UART4)
 	PA1     ------> UART4_RX
 	*/
 	HAL_GPIO_DeInit(GPIOA, GPIO_PIN_0|GPIO_PIN_1);
-
 	}
-	else if(huart->Instance==USART1)
+else if(huart->Instance==UART5)
+	{
+	/* Peripheral clock disable */
+	__HAL_RCC_UART5_CLK_DISABLE();
+
+	/**UART5 GPIO Configuration
+	PB12     ------> UART5_RX
+	PB13     ------> UART5_TX */
+	HAL_GPIO_DeInit(GPIOB, GPIO_PIN_12|GPIO_PIN_13);
+	}
+else if(huart->Instance==USART1)
 	{
 	/* Peripheral clock disable */
 	__HAL_RCC_USART1_CLK_DISABLE();

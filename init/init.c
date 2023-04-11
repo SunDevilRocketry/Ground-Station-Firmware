@@ -159,10 +159,10 @@ if (HAL_UARTEx_DisableFifoMode(&huart4) != HAL_OK)
 
 /*******************************************************************************
 *                                                                              *
-* PROCEDURE:                                                                   * 
+* PROCEDURE:                                                                   *
 *       USB_UART_Init                                                          *
 *                                                                              *
-* DESCRIPTION:                                                                 * 
+* DESCRIPTION:                                                                 *
 *		Initializes the UART peripheral attached to the USB port               *
 *                                                                              *
 *******************************************************************************/
@@ -209,6 +209,52 @@ if (HAL_UARTEx_DisableFifoMode(&huart1) != HAL_OK)
 /*******************************************************************************
 *                                                                              *
 * PROCEDURE:                                                                   *
+*       RS485_UART_Init                                                        *
+*                                                                              *
+* DESCRIPTION:                                                                 *
+*		Initializes the UART peripheral attached to the RS485 Interface        *
+*                                                                              *
+*******************************************************************************/
+void RS485_UART_Init
+	(
+	void
+	)
+{
+/* UART Configuration */
+huart5.Instance                    = UART5;
+huart5.Init.BaudRate               = 9600;
+huart5.Init.WordLength             = UART_WORDLENGTH_8B;
+huart5.Init.StopBits               = UART_STOPBITS_1;
+huart5.Init.Parity                 = UART_PARITY_NONE;
+huart5.Init.Mode                   = UART_MODE_TX_RX;
+huart5.Init.HwFlowCtl              = UART_HWCONTROL_NONE;
+huart5.Init.OverSampling           = UART_OVERSAMPLING_16;
+huart5.Init.OneBitSampling         = UART_ONE_BIT_SAMPLE_DISABLE;
+huart5.Init.ClockPrescaler         = UART_PRESCALER_DIV1;
+huart5.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+
+/* Initialize the UART Peripheral */
+if ( HAL_UART_Init( &huart5 ) != HAL_OK )
+	{
+	Error_Handler( ERROR_RS485_UART_INIT_ERROR );
+	}
+if ( HAL_UARTEx_SetTxFifoThreshold( &huart5, UART_TXFIFO_THRESHOLD_1_8 ) != HAL_OK )
+	{
+	Error_Handler( ERROR_RS485_UART_INIT_ERROR );
+	}
+if ( HAL_UARTEx_SetRxFifoThreshold( &huart5, UART_RXFIFO_THRESHOLD_1_8 ) != HAL_OK )
+	{
+	Error_Handler( ERROR_RS485_UART_INIT_ERROR );
+	}
+if ( HAL_UARTEx_DisableFifoMode( &huart5 ) != HAL_OK )
+	{
+	Error_Handler( ERROR_RS485_UART_INIT_ERROR );
+	}
+} /* RS485_UART_Init */
+
+/*******************************************************************************
+*                                                                              *
+* PROCEDURE:                                                                   *
 *       GPIO_Init                                                              * 
 *                                                                              *
 * DESCRIPTION:                                                                 * 
@@ -226,6 +272,8 @@ GPIO_InitTypeDef GPIO_InitStruct = {0};
 /* GPIO Ports Clock Enable */
 __HAL_RCC_GPIOH_CLK_ENABLE();
 __HAL_RCC_GPIOA_CLK_ENABLE();
+__HAL_RCC_GPIOB_CLK_ENABLE();
+__HAL_RCC_GPIOD_CLK_ENABLE();
 __HAL_RCC_GPIOE_CLK_ENABLE();
 
 /*--------------------------- LED MCU PINS -----------------------------------*/
@@ -264,23 +312,19 @@ GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
 HAL_GPIO_Init( XBEE_SLEEP_GPIO_PORT, &GPIO_InitStruct );
 
 /* XBEE RTS signal */
-/*
 HAL_GPIO_WritePin( XBEE_RTS_GPIO_PORT, XBEE_RTS_PIN, GPIO_PIN_SET );
 GPIO_InitStruct.Pin   = XBEE_RTS_PIN;
 GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
 GPIO_InitStruct.Pull  = GPIO_NOPULL;
 GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
 HAL_GPIO_Init( XBEE_RTS_GPIO_PORT, &GPIO_InitStruct );
-*/
 
 /* XBEE CTS Signal */
-/*
 GPIO_InitStruct.Pin = XBEE_CTS_PIN;
 GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
 GPIO_InitStruct.Pull = GPIO_NOPULL;
 GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
 HAL_GPIO_Init( XBEE_CTS_GPIO_PORT, &GPIO_InitStruct );
-*/
 
 } /* GPIO_Init */
 
