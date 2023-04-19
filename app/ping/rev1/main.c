@@ -108,7 +108,7 @@ led_set_color( LED_GREEN );
 		rs485_status = rs485_receive_byte( &rx_byte ); 
 
 		/* Received byte */
-		if ( rs485_status != RS485_TIMEOUT )
+		if ( ( rs485_status != RS485_TIMEOUT ) && ( rx_byte != 0 ) )
 			{
 			led_set_color( LED_GREEN );
 			/* Correct byte? */
@@ -116,9 +116,6 @@ led_set_color( LED_GREEN );
 				{
 				Error_Handler( ERROR_RF_UNRECOGNIZED_PING );
 				}
-
-			/* Send a ping to the other wireless module */
-			rs485_transmit_byte( PING_CODE );
 
 			/* Tell PC a ping has been received */
 			usb_status = usb_transmit( &rx_byte         , 
@@ -128,6 +125,10 @@ led_set_color( LED_GREEN );
 				{
 				Error_Handler( ERROR_USB_UART_ERROR );
 				}
+
+			/* Send a ping to the other wireless module */
+			rs485_transmit_byte( PING_CODE );
+
 			} /* if ( rs485_status != RS485_TIMEOUT ) */
 		else
 			{
