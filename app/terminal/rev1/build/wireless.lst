@@ -1,0 +1,613 @@
+ARM GAS  /tmp/ccPvyOtg.s 			page 1
+
+
+   1              		.cpu cortex-m7
+   2              		.arch armv7e-m
+   3              		.fpu fpv5-d16
+   4              		.eabi_attribute 28, 1
+   5              		.eabi_attribute 20, 1
+   6              		.eabi_attribute 21, 1
+   7              		.eabi_attribute 23, 3
+   8              		.eabi_attribute 24, 1
+   9              		.eabi_attribute 25, 1
+  10              		.eabi_attribute 26, 1
+  11              		.eabi_attribute 30, 1
+  12              		.eabi_attribute 34, 1
+  13              		.eabi_attribute 18, 4
+  14              		.file	"wireless.c"
+  15              		.text
+  16              	.Ltext0:
+  17              		.cfi_sections	.debug_frame
+  18              		.file 1 "../../../mod/wireless/wireless.c"
+  19              		.section	.text.rf_xbee_transmit_byte,"ax",%progbits
+  20              		.align	1
+  21              		.global	rf_xbee_transmit_byte
+  22              		.syntax unified
+  23              		.thumb
+  24              		.thumb_func
+  26              	rf_xbee_transmit_byte:
+  27              	.LVL0:
+  28              	.LFB144:
+   1:../../../mod/wireless/wireless.c **** /*******************************************************************************
+   2:../../../mod/wireless/wireless.c **** *
+   3:../../../mod/wireless/wireless.c **** * FILE: 
+   4:../../../mod/wireless/wireless.c **** * 		wireless.c
+   5:../../../mod/wireless/wireless.c **** *
+   6:../../../mod/wireless/wireless.c **** * DESCRIPTION: 
+   7:../../../mod/wireless/wireless.c **** * 		Contains API functions to transmit data wirelessly using the XBee and 
+   8:../../../mod/wireless/wireless.c **** *       and LoRa modules 
+   9:../../../mod/wireless/wireless.c **** *
+  10:../../../mod/wireless/wireless.c **** *******************************************************************************/
+  11:../../../mod/wireless/wireless.c **** 
+  12:../../../mod/wireless/wireless.c **** 
+  13:../../../mod/wireless/wireless.c **** /*------------------------------------------------------------------------------
+  14:../../../mod/wireless/wireless.c ****  Standard Includes                                                                     
+  15:../../../mod/wireless/wireless.c **** ------------------------------------------------------------------------------*/
+  16:../../../mod/wireless/wireless.c **** #if defined( GROUND_STATION )
+  17:../../../mod/wireless/wireless.c **** 	#include "sdr_pin_defines_A0005.h"
+  18:../../../mod/wireless/wireless.c **** #elif defined( ENGINE_CONTROLLER )
+  19:../../../mod/wireless/wireless.c **** 	#include "sdr_pin_defines_L0002.h"
+  20:../../../mod/wireless/wireless.c **** #endif
+  21:../../../mod/wireless/wireless.c **** 
+  22:../../../mod/wireless/wireless.c **** /*------------------------------------------------------------------------------
+  23:../../../mod/wireless/wireless.c ****  Project Includes                                                                     
+  24:../../../mod/wireless/wireless.c **** ------------------------------------------------------------------------------*/
+  25:../../../mod/wireless/wireless.c **** #include "main.h"
+  26:../../../mod/wireless/wireless.c **** #include "wireless.h"
+  27:../../../mod/wireless/wireless.c **** 
+  28:../../../mod/wireless/wireless.c **** 
+  29:../../../mod/wireless/wireless.c **** /*------------------------------------------------------------------------------
+  30:../../../mod/wireless/wireless.c **** Global Variables                                                                  
+ARM GAS  /tmp/ccPvyOtg.s 			page 2
+
+
+  31:../../../mod/wireless/wireless.c **** ------------------------------------------------------------------------------*/
+  32:../../../mod/wireless/wireless.c **** 
+  33:../../../mod/wireless/wireless.c **** 
+  34:../../../mod/wireless/wireless.c **** /*------------------------------------------------------------------------------
+  35:../../../mod/wireless/wireless.c ****  Procedures 
+  36:../../../mod/wireless/wireless.c **** ------------------------------------------------------------------------------*/
+  37:../../../mod/wireless/wireless.c **** 
+  38:../../../mod/wireless/wireless.c **** 
+  39:../../../mod/wireless/wireless.c **** /*******************************************************************************
+  40:../../../mod/wireless/wireless.c **** *                                                                              *
+  41:../../../mod/wireless/wireless.c **** * PROCEDURE:                                                                   *
+  42:../../../mod/wireless/wireless.c **** * 		rf_xbee_transmit_byte                                                  *
+  43:../../../mod/wireless/wireless.c **** *                                                                              *
+  44:../../../mod/wireless/wireless.c **** * DESCRIPTION:                                                                 *
+  45:../../../mod/wireless/wireless.c **** * 		transmits a byte wirelessly using the xbee module                      *
+  46:../../../mod/wireless/wireless.c **** *                                                                              *
+  47:../../../mod/wireless/wireless.c **** *******************************************************************************/
+  48:../../../mod/wireless/wireless.c **** RF_STATUS rf_xbee_transmit_byte 
+  49:../../../mod/wireless/wireless.c **** 	(
+  50:../../../mod/wireless/wireless.c ****     uint8_t tx_byte	
+  51:../../../mod/wireless/wireless.c **** 	)
+  52:../../../mod/wireless/wireless.c **** {
+  29              		.loc 1 52 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 8
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		.loc 1 52 1 is_stmt 0 view .LVU1
+  34 0000 00B5     		push	{lr}
+  35              	.LCFI0:
+  36              		.cfi_def_cfa_offset 4
+  37              		.cfi_offset 14, -4
+  38 0002 83B0     		sub	sp, sp, #12
+  39              	.LCFI1:
+  40              		.cfi_def_cfa_offset 16
+  41 0004 8DF80700 		strb	r0, [sp, #7]
+  53:../../../mod/wireless/wireless.c **** /*------------------------------------------------------------------------------
+  54:../../../mod/wireless/wireless.c ****  Local Variables
+  55:../../../mod/wireless/wireless.c **** ------------------------------------------------------------------------------*/
+  56:../../../mod/wireless/wireless.c **** HAL_StatusTypeDef hal_status;    /* Return codes from HAL */
+  42              		.loc 1 56 1 is_stmt 1 view .LVU2
+  57:../../../mod/wireless/wireless.c **** 
+  58:../../../mod/wireless/wireless.c **** 
+  59:../../../mod/wireless/wireless.c **** /*------------------------------------------------------------------------------
+  60:../../../mod/wireless/wireless.c ****  Initializations 
+  61:../../../mod/wireless/wireless.c **** ------------------------------------------------------------------------------*/
+  62:../../../mod/wireless/wireless.c **** hal_status = HAL_OK;
+  43              		.loc 1 62 1 view .LVU3
+  44              	.LVL1:
+  63:../../../mod/wireless/wireless.c **** 
+  64:../../../mod/wireless/wireless.c **** 
+  65:../../../mod/wireless/wireless.c **** /*------------------------------------------------------------------------------
+  66:../../../mod/wireless/wireless.c ****  API Function Implementation 
+  67:../../../mod/wireless/wireless.c **** ------------------------------------------------------------------------------*/
+  68:../../../mod/wireless/wireless.c **** 
+  69:../../../mod/wireless/wireless.c **** /* Wait for Clear to send signal */
+  70:../../../mod/wireless/wireless.c **** #ifdef GROUND_STATION
+  71:../../../mod/wireless/wireless.c **** while ( HAL_GPIO_ReadPin( XBEE_CTS_GPIO_PORT, XBEE_CTS_PIN ) != GPIO_PIN_RESET )
+ARM GAS  /tmp/ccPvyOtg.s 			page 3
+
+
+  45              		.loc 1 71 1 view .LVU4
+  46              	.L2:
+  72:../../../mod/wireless/wireless.c **** 	{
+  73:../../../mod/wireless/wireless.c **** 	}
+  47              		.loc 1 73 2 discriminator 1 view .LVU5
+  71:../../../mod/wireless/wireless.c **** 	{
+  48              		.loc 1 71 62 discriminator 1 view .LVU6
+  71:../../../mod/wireless/wireless.c **** 	{
+  49              		.loc 1 71 9 is_stmt 0 discriminator 1 view .LVU7
+  50 0008 0221     		movs	r1, #2
+  51 000a 0848     		ldr	r0, .L5
+  52 000c FFF7FEFF 		bl	HAL_GPIO_ReadPin
+  53              	.LVL2:
+  71:../../../mod/wireless/wireless.c **** 	{
+  54              		.loc 1 71 62 discriminator 1 view .LVU8
+  55 0010 0028     		cmp	r0, #0
+  56 0012 F9D1     		bne	.L2
+  74:../../../mod/wireless/wireless.c **** #endif
+  75:../../../mod/wireless/wireless.c **** 
+  76:../../../mod/wireless/wireless.c **** /* Transmit byte */
+  77:../../../mod/wireless/wireless.c **** hal_status = HAL_UART_Transmit( &( XBEE_HUART )  ,
+  57              		.loc 1 77 1 is_stmt 1 view .LVU9
+  58              		.loc 1 77 14 is_stmt 0 view .LVU10
+  59 0014 6423     		movs	r3, #100
+  60 0016 0122     		movs	r2, #1
+  61 0018 0DF10701 		add	r1, sp, #7
+  62 001c 0448     		ldr	r0, .L5+4
+  63 001e FFF7FEFF 		bl	HAL_UART_Transmit
+  64              	.LVL3:
+  78:../../../mod/wireless/wireless.c ****                                 &tx_byte         , 
+  79:../../../mod/wireless/wireless.c ****                                 sizeof( tx_byte ), 
+  80:../../../mod/wireless/wireless.c ****                                 RF_POLL_TIMEOUT );
+  81:../../../mod/wireless/wireless.c **** 
+  82:../../../mod/wireless/wireless.c **** /* Return HAL status */
+  83:../../../mod/wireless/wireless.c **** if ( hal_status != HAL_OK )
+  65              		.loc 1 83 1 is_stmt 1 view .LVU11
+  66              		.loc 1 83 4 is_stmt 0 view .LVU12
+  67 0022 00B1     		cbz	r0, .L3
+  84:../../../mod/wireless/wireless.c **** 	{
+  85:../../../mod/wireless/wireless.c **** 	return RF_ERROR;
+  68              		.loc 1 85 9 view .LVU13
+  69 0024 0120     		movs	r0, #1
+  70              	.LVL4:
+  71              	.L3:
+  86:../../../mod/wireless/wireless.c **** 	}
+  87:../../../mod/wireless/wireless.c **** else
+  88:../../../mod/wireless/wireless.c **** 	{
+  89:../../../mod/wireless/wireless.c **** 	return RF_OK;
+  90:../../../mod/wireless/wireless.c **** 	}
+  91:../../../mod/wireless/wireless.c **** 
+  92:../../../mod/wireless/wireless.c **** } /* rf_xbee_transmit_byte */
+  72              		.loc 1 92 1 view .LVU14
+  73 0026 03B0     		add	sp, sp, #12
+  74              	.LCFI2:
+  75              		.cfi_def_cfa_offset 4
+  76              		@ sp needed
+  77 0028 5DF804FB 		ldr	pc, [sp], #4
+ARM GAS  /tmp/ccPvyOtg.s 			page 4
+
+
+  78              	.L6:
+  79              		.align	2
+  80              	.L5:
+  81 002c 000C0258 		.word	1476529152
+  82 0030 00000000 		.word	huart4
+  83              		.cfi_endproc
+  84              	.LFE144:
+  86              		.section	.text.rf_xbee_transmit,"ax",%progbits
+  87              		.align	1
+  88              		.global	rf_xbee_transmit
+  89              		.syntax unified
+  90              		.thumb
+  91              		.thumb_func
+  93              	rf_xbee_transmit:
+  94              	.LVL5:
+  95              	.LFB145:
+  93:../../../mod/wireless/wireless.c **** 
+  94:../../../mod/wireless/wireless.c **** 
+  95:../../../mod/wireless/wireless.c **** /*******************************************************************************
+  96:../../../mod/wireless/wireless.c **** *                                                                              *
+  97:../../../mod/wireless/wireless.c **** * PROCEDURE:                                                                   *
+  98:../../../mod/wireless/wireless.c **** * 		rf_xbee_transmit                                                       *
+  99:../../../mod/wireless/wireless.c **** *                                                                              *
+ 100:../../../mod/wireless/wireless.c **** * DESCRIPTION:                                                                 *
+ 101:../../../mod/wireless/wireless.c **** * 		transmits a buffer of bytes wirelessly using the xbee module           *
+ 102:../../../mod/wireless/wireless.c **** *                                                                              *
+ 103:../../../mod/wireless/wireless.c **** *******************************************************************************/
+ 104:../../../mod/wireless/wireless.c **** RF_STATUS rf_xbee_transmit
+ 105:../../../mod/wireless/wireless.c **** 	(
+ 106:../../../mod/wireless/wireless.c ****     void*  tx_buffer_ptr,   /* Pointer to buffer data    */
+ 107:../../../mod/wireless/wireless.c **** 	size_t buffer_size	    /* Number of bytes in buffer */
+ 108:../../../mod/wireless/wireless.c **** 	)
+ 109:../../../mod/wireless/wireless.c **** {
+  96              		.loc 1 109 1 is_stmt 1 view -0
+  97              		.cfi_startproc
+  98              		@ args = 0, pretend = 0, frame = 0
+  99              		@ frame_needed = 0, uses_anonymous_args = 0
+ 100              		.loc 1 109 1 is_stmt 0 view .LVU16
+ 101 0000 08B5     		push	{r3, lr}
+ 102              	.LCFI3:
+ 103              		.cfi_def_cfa_offset 8
+ 104              		.cfi_offset 3, -8
+ 105              		.cfi_offset 14, -4
+ 110:../../../mod/wireless/wireless.c **** /*------------------------------------------------------------------------------
+ 111:../../../mod/wireless/wireless.c ****  Local Variables
+ 112:../../../mod/wireless/wireless.c **** ------------------------------------------------------------------------------*/
+ 113:../../../mod/wireless/wireless.c **** HAL_StatusTypeDef hal_status;    /* Return codes from HAL */
+ 106              		.loc 1 113 1 is_stmt 1 view .LVU17
+ 114:../../../mod/wireless/wireless.c **** uint32_t          timeout;       /* UART transmit timeout */
+ 107              		.loc 1 114 1 view .LVU18
+ 115:../../../mod/wireless/wireless.c **** 
+ 116:../../../mod/wireless/wireless.c **** 
+ 117:../../../mod/wireless/wireless.c **** /*------------------------------------------------------------------------------
+ 118:../../../mod/wireless/wireless.c ****  Initializations 
+ 119:../../../mod/wireless/wireless.c **** ------------------------------------------------------------------------------*/
+ 120:../../../mod/wireless/wireless.c **** hal_status = HAL_OK;
+ 108              		.loc 1 120 1 view .LVU19
+ARM GAS  /tmp/ccPvyOtg.s 			page 5
+
+
+ 109              	.LVL6:
+ 121:../../../mod/wireless/wireless.c **** timeout    = RF_POLL_TIMEOUT*buffer_size;
+ 110              		.loc 1 121 1 view .LVU20
+ 122:../../../mod/wireless/wireless.c **** 
+ 123:../../../mod/wireless/wireless.c **** 
+ 124:../../../mod/wireless/wireless.c **** /*------------------------------------------------------------------------------
+ 125:../../../mod/wireless/wireless.c ****  API Function Implementation 
+ 126:../../../mod/wireless/wireless.c **** ------------------------------------------------------------------------------*/
+ 127:../../../mod/wireless/wireless.c **** 
+ 128:../../../mod/wireless/wireless.c **** /* Transmit byte */
+ 129:../../../mod/wireless/wireless.c **** hal_status = HAL_UART_Transmit( &( XBEE_HUART ),
+ 111              		.loc 1 129 1 view .LVU21
+ 112              		.loc 1 129 14 is_stmt 0 view .LVU22
+ 113 0002 6423     		movs	r3, #100
+ 114 0004 01FB03F3 		mul	r3, r1, r3
+ 115              	.LVL7:
+ 116              		.loc 1 129 14 view .LVU23
+ 117 0008 8AB2     		uxth	r2, r1
+ 118 000a 0146     		mov	r1, r0
+ 119              	.LVL8:
+ 120              		.loc 1 129 14 view .LVU24
+ 121 000c 0248     		ldr	r0, .L10
+ 122              	.LVL9:
+ 123              		.loc 1 129 14 view .LVU25
+ 124 000e FFF7FEFF 		bl	HAL_UART_Transmit
+ 125              	.LVL10:
+ 130:../../../mod/wireless/wireless.c ****                                 tx_buffer_ptr  , 
+ 131:../../../mod/wireless/wireless.c ****                                 buffer_size    , 
+ 132:../../../mod/wireless/wireless.c ****                                 timeout );
+ 133:../../../mod/wireless/wireless.c **** 
+ 134:../../../mod/wireless/wireless.c **** /* Return HAL status */
+ 135:../../../mod/wireless/wireless.c **** if ( hal_status != HAL_OK )
+ 126              		.loc 1 135 1 is_stmt 1 view .LVU26
+ 127              		.loc 1 135 4 is_stmt 0 view .LVU27
+ 128 0012 00B1     		cbz	r0, .L8
+ 136:../../../mod/wireless/wireless.c **** 	{
+ 137:../../../mod/wireless/wireless.c **** 	return RF_ERROR;
+ 129              		.loc 1 137 9 view .LVU28
+ 130 0014 0120     		movs	r0, #1
+ 131              	.L8:
+ 138:../../../mod/wireless/wireless.c **** 	}
+ 139:../../../mod/wireless/wireless.c **** else
+ 140:../../../mod/wireless/wireless.c **** 	{
+ 141:../../../mod/wireless/wireless.c **** 	return RF_OK;
+ 142:../../../mod/wireless/wireless.c **** 	}
+ 143:../../../mod/wireless/wireless.c **** 
+ 144:../../../mod/wireless/wireless.c **** } /* rf_xbee_transmit */
+ 132              		.loc 1 144 1 view .LVU29
+ 133 0016 08BD     		pop	{r3, pc}
+ 134              	.L11:
+ 135              		.align	2
+ 136              	.L10:
+ 137 0018 00000000 		.word	huart4
+ 138              		.cfi_endproc
+ 139              	.LFE145:
+ 141              		.section	.text.rf_xbee_receive_byte,"ax",%progbits
+ 142              		.align	1
+ARM GAS  /tmp/ccPvyOtg.s 			page 6
+
+
+ 143              		.global	rf_xbee_receive_byte
+ 144              		.syntax unified
+ 145              		.thumb
+ 146              		.thumb_func
+ 148              	rf_xbee_receive_byte:
+ 149              	.LVL11:
+ 150              	.LFB146:
+ 145:../../../mod/wireless/wireless.c **** 
+ 146:../../../mod/wireless/wireless.c **** 
+ 147:../../../mod/wireless/wireless.c **** /*******************************************************************************
+ 148:../../../mod/wireless/wireless.c **** *                                                                              *
+ 149:../../../mod/wireless/wireless.c **** * PROCEDURE:                                                                   *
+ 150:../../../mod/wireless/wireless.c **** * 		rf_xbee_receieve_byte                                                  *
+ 151:../../../mod/wireless/wireless.c **** *                                                                              *
+ 152:../../../mod/wireless/wireless.c **** * DESCRIPTION:                                                                 *
+ 153:../../../mod/wireless/wireless.c **** * 		Receives a byte from the xbee module                                   *
+ 154:../../../mod/wireless/wireless.c **** *                                                                              *
+ 155:../../../mod/wireless/wireless.c **** *******************************************************************************/
+ 156:../../../mod/wireless/wireless.c **** RF_STATUS rf_xbee_receive_byte 
+ 157:../../../mod/wireless/wireless.c **** 	(
+ 158:../../../mod/wireless/wireless.c **** 	uint8_t* p_rx_byte	
+ 159:../../../mod/wireless/wireless.c **** 	)
+ 160:../../../mod/wireless/wireless.c **** {
+ 151              		.loc 1 160 1 is_stmt 1 view -0
+ 152              		.cfi_startproc
+ 153              		@ args = 0, pretend = 0, frame = 0
+ 154              		@ frame_needed = 0, uses_anonymous_args = 0
+ 155              		.loc 1 160 1 is_stmt 0 view .LVU31
+ 156 0000 38B5     		push	{r3, r4, r5, lr}
+ 157              	.LCFI4:
+ 158              		.cfi_def_cfa_offset 16
+ 159              		.cfi_offset 3, -16
+ 160              		.cfi_offset 4, -12
+ 161              		.cfi_offset 5, -8
+ 162              		.cfi_offset 14, -4
+ 163 0002 0446     		mov	r4, r0
+ 161:../../../mod/wireless/wireless.c **** /*------------------------------------------------------------------------------
+ 162:../../../mod/wireless/wireless.c ****  Local Variables
+ 163:../../../mod/wireless/wireless.c **** ------------------------------------------------------------------------------*/
+ 164:../../../mod/wireless/wireless.c **** HAL_StatusTypeDef hal_status;
+ 164              		.loc 1 164 1 is_stmt 1 view .LVU32
+ 165:../../../mod/wireless/wireless.c **** 
+ 166:../../../mod/wireless/wireless.c **** 
+ 167:../../../mod/wireless/wireless.c **** /*------------------------------------------------------------------------------
+ 168:../../../mod/wireless/wireless.c ****  Initializations
+ 169:../../../mod/wireless/wireless.c **** ------------------------------------------------------------------------------*/
+ 170:../../../mod/wireless/wireless.c **** hal_status = HAL_OK;
+ 165              		.loc 1 170 1 view .LVU33
+ 166              	.LVL12:
+ 171:../../../mod/wireless/wireless.c **** 
+ 172:../../../mod/wireless/wireless.c **** 
+ 173:../../../mod/wireless/wireless.c **** /*------------------------------------------------------------------------------
+ 174:../../../mod/wireless/wireless.c ****  API Function Implementation 
+ 175:../../../mod/wireless/wireless.c **** ------------------------------------------------------------------------------*/
+ 176:../../../mod/wireless/wireless.c **** 
+ 177:../../../mod/wireless/wireless.c **** /* Set the Ready to Send Signal */
+ 178:../../../mod/wireless/wireless.c **** #ifdef GROUND_STATION
+ARM GAS  /tmp/ccPvyOtg.s 			page 7
+
+
+ 179:../../../mod/wireless/wireless.c **** HAL_GPIO_WritePin( XBEE_RTS_GPIO_PORT, XBEE_RTS_PIN, GPIO_PIN_RESET );
+ 167              		.loc 1 179 1 view .LVU34
+ 168 0004 0C4D     		ldr	r5, .L16
+ 169 0006 0022     		movs	r2, #0
+ 170 0008 1021     		movs	r1, #16
+ 171 000a 2846     		mov	r0, r5
+ 172              	.LVL13:
+ 173              		.loc 1 179 1 is_stmt 0 view .LVU35
+ 174 000c FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 175              	.LVL14:
+ 180:../../../mod/wireless/wireless.c **** #endif
+ 181:../../../mod/wireless/wireless.c **** 
+ 182:../../../mod/wireless/wireless.c **** /* Receive byte */
+ 183:../../../mod/wireless/wireless.c **** hal_status = HAL_UART_Receive( &( XBEE_HUART )  ,
+ 176              		.loc 1 183 1 is_stmt 1 view .LVU36
+ 177              		.loc 1 183 14 is_stmt 0 view .LVU37
+ 178 0010 6423     		movs	r3, #100
+ 179 0012 0122     		movs	r2, #1
+ 180 0014 2146     		mov	r1, r4
+ 181 0016 0948     		ldr	r0, .L16+4
+ 182 0018 FFF7FEFF 		bl	HAL_UART_Receive
+ 183              	.LVL15:
+ 184 001c 0446     		mov	r4, r0
+ 185              	.LVL16:
+ 184:../../../mod/wireless/wireless.c ****                                p_rx_byte        , 
+ 185:../../../mod/wireless/wireless.c ****                                sizeof( uint8_t ), 
+ 186:../../../mod/wireless/wireless.c ****                                RF_POLL_TIMEOUT );
+ 187:../../../mod/wireless/wireless.c **** 
+ 188:../../../mod/wireless/wireless.c **** /* Reset the Read to Send signal */
+ 189:../../../mod/wireless/wireless.c **** #ifdef GROUND_STATION
+ 190:../../../mod/wireless/wireless.c **** HAL_GPIO_WritePin( XBEE_RTS_GPIO_PORT, XBEE_RTS_PIN, GPIO_PIN_SET );
+ 186              		.loc 1 190 1 is_stmt 1 view .LVU38
+ 187 001e 0122     		movs	r2, #1
+ 188 0020 1021     		movs	r1, #16
+ 189 0022 2846     		mov	r0, r5
+ 190 0024 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 191              	.LVL17:
+ 191:../../../mod/wireless/wireless.c **** #endif
+ 192:../../../mod/wireless/wireless.c **** 
+ 193:../../../mod/wireless/wireless.c **** /* Return HAL status */
+ 194:../../../mod/wireless/wireless.c **** switch ( hal_status )
+ 192              		.loc 1 194 1 view .LVU39
+ 193 0028 14B1     		cbz	r4, .L13
+ 194 002a 032C     		cmp	r4, #3
+ 195 002c 02D1     		bne	.L14
+ 196 002e 0224     		movs	r4, #2
+ 197              	.LVL18:
+ 198              	.L13:
+ 195:../../../mod/wireless/wireless.c **** 	{
+ 196:../../../mod/wireless/wireless.c **** 	case HAL_TIMEOUT:
+ 197:../../../mod/wireless/wireless.c **** 		{
+ 198:../../../mod/wireless/wireless.c **** 		return RF_TIMEOUT;
+ 199:../../../mod/wireless/wireless.c **** 		}
+ 200:../../../mod/wireless/wireless.c **** 	case HAL_OK:
+ 201:../../../mod/wireless/wireless.c **** 		{
+ 202:../../../mod/wireless/wireless.c **** 		return RF_OK;
+ 203:../../../mod/wireless/wireless.c **** 		}
+ARM GAS  /tmp/ccPvyOtg.s 			page 8
+
+
+ 204:../../../mod/wireless/wireless.c **** 	default:
+ 205:../../../mod/wireless/wireless.c **** 		{
+ 206:../../../mod/wireless/wireless.c **** 		return RF_ERROR;
+ 207:../../../mod/wireless/wireless.c ****         }
+ 208:../../../mod/wireless/wireless.c **** 	}
+ 209:../../../mod/wireless/wireless.c **** } /* rf_xbee_receive_byte */
+ 199              		.loc 1 209 1 is_stmt 0 view .LVU40
+ 200 0030 2046     		mov	r0, r4
+ 201 0032 38BD     		pop	{r3, r4, r5, pc}
+ 202              	.LVL19:
+ 203              	.L14:
+ 206:../../../mod/wireless/wireless.c ****         }
+ 204              		.loc 1 206 10 view .LVU41
+ 205 0034 0124     		movs	r4, #1
+ 206              	.LVL20:
+ 206:../../../mod/wireless/wireless.c ****         }
+ 207              		.loc 1 206 10 view .LVU42
+ 208 0036 FBE7     		b	.L13
+ 209              	.L17:
+ 210              		.align	2
+ 211              	.L16:
+ 212 0038 000C0258 		.word	1476529152
+ 213 003c 00000000 		.word	huart4
+ 214              		.cfi_endproc
+ 215              	.LFE146:
+ 217              		.section	.text.rf_xbee_receive,"ax",%progbits
+ 218              		.align	1
+ 219              		.global	rf_xbee_receive
+ 220              		.syntax unified
+ 221              		.thumb
+ 222              		.thumb_func
+ 224              	rf_xbee_receive:
+ 225              	.LVL21:
+ 226              	.LFB147:
+ 210:../../../mod/wireless/wireless.c **** 
+ 211:../../../mod/wireless/wireless.c **** 
+ 212:../../../mod/wireless/wireless.c **** /*******************************************************************************
+ 213:../../../mod/wireless/wireless.c **** *                                                                              *
+ 214:../../../mod/wireless/wireless.c **** * PROCEDURE:                                                                   *
+ 215:../../../mod/wireless/wireless.c **** * 		rf_xbee_receive                                                        *
+ 216:../../../mod/wireless/wireless.c **** *                                                                              *
+ 217:../../../mod/wireless/wireless.c **** * DESCRIPTION:                                                                 *
+ 218:../../../mod/wireless/wireless.c **** * 		Receives data from the xbee module and outputs to a buffer             *
+ 219:../../../mod/wireless/wireless.c **** *                                                                              *
+ 220:../../../mod/wireless/wireless.c **** *******************************************************************************/
+ 221:../../../mod/wireless/wireless.c **** RF_STATUS rf_xbee_receive
+ 222:../../../mod/wireless/wireless.c **** 	(
+ 223:../../../mod/wireless/wireless.c **** 	void*  rx_buffer_ptr,   /* Pointer to output data buffer */	
+ 224:../../../mod/wireless/wireless.c **** 	size_t rx_buffer_size   /* Number of bytes to recevie    */
+ 225:../../../mod/wireless/wireless.c **** 	)
+ 226:../../../mod/wireless/wireless.c **** {
+ 227              		.loc 1 226 1 is_stmt 1 view -0
+ 228              		.cfi_startproc
+ 229              		@ args = 0, pretend = 0, frame = 0
+ 230              		@ frame_needed = 0, uses_anonymous_args = 0
+ 231              		.loc 1 226 1 is_stmt 0 view .LVU44
+ 232 0000 08B5     		push	{r3, lr}
+ARM GAS  /tmp/ccPvyOtg.s 			page 9
+
+
+ 233              	.LCFI5:
+ 234              		.cfi_def_cfa_offset 8
+ 235              		.cfi_offset 3, -8
+ 236              		.cfi_offset 14, -4
+ 227:../../../mod/wireless/wireless.c **** /*------------------------------------------------------------------------------
+ 228:../../../mod/wireless/wireless.c ****  Local Variables
+ 229:../../../mod/wireless/wireless.c **** ------------------------------------------------------------------------------*/
+ 230:../../../mod/wireless/wireless.c **** HAL_StatusTypeDef hal_status;    /* Return codes from HAL */
+ 237              		.loc 1 230 1 is_stmt 1 view .LVU45
+ 231:../../../mod/wireless/wireless.c **** uint32_t          timeout;       /* UART receive timeout  */
+ 238              		.loc 1 231 1 view .LVU46
+ 232:../../../mod/wireless/wireless.c **** 
+ 233:../../../mod/wireless/wireless.c **** 
+ 234:../../../mod/wireless/wireless.c **** /*------------------------------------------------------------------------------
+ 235:../../../mod/wireless/wireless.c ****  Initialization 
+ 236:../../../mod/wireless/wireless.c **** ------------------------------------------------------------------------------*/
+ 237:../../../mod/wireless/wireless.c **** hal_status = HAL_OK;
+ 239              		.loc 1 237 1 view .LVU47
+ 240              	.LVL22:
+ 238:../../../mod/wireless/wireless.c **** timeout    = rx_buffer_size*RF_POLL_TIMEOUT;
+ 241              		.loc 1 238 1 view .LVU48
+ 242              		.loc 1 238 12 is_stmt 0 view .LVU49
+ 243 0002 6423     		movs	r3, #100
+ 244 0004 03FB01F2 		mul	r2, r3, r1
+ 245              	.LVL23:
+ 239:../../../mod/wireless/wireless.c **** 
+ 240:../../../mod/wireless/wireless.c **** 
+ 241:../../../mod/wireless/wireless.c **** /*------------------------------------------------------------------------------
+ 242:../../../mod/wireless/wireless.c ****  API Function Implementation 
+ 243:../../../mod/wireless/wireless.c **** ------------------------------------------------------------------------------*/
+ 244:../../../mod/wireless/wireless.c **** 
+ 245:../../../mod/wireless/wireless.c **** /* Receive data */
+ 246:../../../mod/wireless/wireless.c **** hal_status = HAL_UART_Receive( &( XBEE_HUART ),
+ 246              		.loc 1 246 1 is_stmt 1 view .LVU50
+ 247              		.loc 1 246 14 is_stmt 0 view .LVU51
+ 248 0008 92B2     		uxth	r2, r2
+ 249              	.LVL24:
+ 250              		.loc 1 246 14 view .LVU52
+ 251 000a 0146     		mov	r1, r0
+ 252              	.LVL25:
+ 253              		.loc 1 246 14 view .LVU53
+ 254 000c 0548     		ldr	r0, .L22
+ 255              	.LVL26:
+ 256              		.loc 1 246 14 view .LVU54
+ 257 000e FFF7FEFF 		bl	HAL_UART_Receive
+ 258              	.LVL27:
+ 247:../../../mod/wireless/wireless.c ****                                rx_buffer_ptr  , 
+ 248:../../../mod/wireless/wireless.c ****                                timeout        , 
+ 249:../../../mod/wireless/wireless.c ****                                RF_POLL_TIMEOUT );
+ 250:../../../mod/wireless/wireless.c **** 
+ 251:../../../mod/wireless/wireless.c **** /* Return HAL status */
+ 252:../../../mod/wireless/wireless.c **** switch ( hal_status )
+ 259              		.loc 1 252 1 is_stmt 1 view .LVU55
+ 260 0012 0346     		mov	r3, r0
+ 261 0014 10B1     		cbz	r0, .L19
+ 262 0016 0328     		cmp	r0, #3
+ 263 0018 02D1     		bne	.L20
+ARM GAS  /tmp/ccPvyOtg.s 			page 10
+
+
+ 264 001a 0223     		movs	r3, #2
+ 265              	.L19:
+ 253:../../../mod/wireless/wireless.c **** 	{
+ 254:../../../mod/wireless/wireless.c **** 	case HAL_TIMEOUT:
+ 255:../../../mod/wireless/wireless.c **** 		{
+ 256:../../../mod/wireless/wireless.c **** 		return RF_TIMEOUT;
+ 257:../../../mod/wireless/wireless.c **** 		}
+ 258:../../../mod/wireless/wireless.c **** 	case HAL_OK:
+ 259:../../../mod/wireless/wireless.c **** 		{
+ 260:../../../mod/wireless/wireless.c **** 		return RF_OK;
+ 261:../../../mod/wireless/wireless.c **** 		}
+ 262:../../../mod/wireless/wireless.c **** 	default:
+ 263:../../../mod/wireless/wireless.c **** 		{
+ 264:../../../mod/wireless/wireless.c **** 		return RF_ERROR;
+ 265:../../../mod/wireless/wireless.c ****         }
+ 266:../../../mod/wireless/wireless.c **** 	}
+ 267:../../../mod/wireless/wireless.c **** } /* rf_xbee_receive */
+ 266              		.loc 1 267 1 is_stmt 0 view .LVU56
+ 267 001c 1846     		mov	r0, r3
+ 268              	.LVL28:
+ 269              		.loc 1 267 1 view .LVU57
+ 270 001e 08BD     		pop	{r3, pc}
+ 271              	.LVL29:
+ 272              	.L20:
+ 264:../../../mod/wireless/wireless.c ****         }
+ 273              		.loc 1 264 10 view .LVU58
+ 274 0020 0123     		movs	r3, #1
+ 275 0022 FBE7     		b	.L19
+ 276              	.L23:
+ 277              		.align	2
+ 278              	.L22:
+ 279 0024 00000000 		.word	huart4
+ 280              		.cfi_endproc
+ 281              	.LFE147:
+ 283              		.text
+ 284              	.Letext0:
+ 285              		.file 2 "/usr/arm-none-eabi/include/machine/_default_types.h"
+ 286              		.file 3 "/usr/arm-none-eabi/include/sys/_stdint.h"
+ 287              		.file 4 "../../../lib/Drivers/CMSIS/Device/ST/STM32H7xx/Include/stm32h750xx.h"
+ 288              		.file 5 "/usr/lib/gcc/arm-none-eabi/12.2.0/include/stddef.h"
+ 289              		.file 6 "../../../lib/Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_def.h"
+ 290              		.file 7 "../../../lib/Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_gpio.h"
+ 291              		.file 8 "../../../lib/Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_dma.h"
+ 292              		.file 9 "../../../lib/Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart.h"
+ 293              		.file 10 "../../../mod/wireless/wireless.h"
+ 294              		.file 11 "../../../lib/sdr_pin_defines_A0005.h"
+ARM GAS  /tmp/ccPvyOtg.s 			page 11
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 wireless.c
+     /tmp/ccPvyOtg.s:20     .text.rf_xbee_transmit_byte:0000000000000000 $t
+     /tmp/ccPvyOtg.s:26     .text.rf_xbee_transmit_byte:0000000000000000 rf_xbee_transmit_byte
+     /tmp/ccPvyOtg.s:81     .text.rf_xbee_transmit_byte:000000000000002c $d
+     /tmp/ccPvyOtg.s:87     .text.rf_xbee_transmit:0000000000000000 $t
+     /tmp/ccPvyOtg.s:93     .text.rf_xbee_transmit:0000000000000000 rf_xbee_transmit
+     /tmp/ccPvyOtg.s:137    .text.rf_xbee_transmit:0000000000000018 $d
+     /tmp/ccPvyOtg.s:142    .text.rf_xbee_receive_byte:0000000000000000 $t
+     /tmp/ccPvyOtg.s:148    .text.rf_xbee_receive_byte:0000000000000000 rf_xbee_receive_byte
+     /tmp/ccPvyOtg.s:212    .text.rf_xbee_receive_byte:0000000000000038 $d
+     /tmp/ccPvyOtg.s:218    .text.rf_xbee_receive:0000000000000000 $t
+     /tmp/ccPvyOtg.s:224    .text.rf_xbee_receive:0000000000000000 rf_xbee_receive
+     /tmp/ccPvyOtg.s:279    .text.rf_xbee_receive:0000000000000024 $d
+
+UNDEFINED SYMBOLS
+HAL_GPIO_ReadPin
+HAL_UART_Transmit
+huart4
+HAL_GPIO_WritePin
+HAL_UART_Receive
