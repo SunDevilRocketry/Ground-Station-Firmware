@@ -4,6 +4,7 @@ app/transmitter/rev1/build
 app/receiver/rev1/build
 app/ping/rev1/build
 app/terminal/rev1/build
+app/hotfire/rev2/build
 
 # VScode artifacts
 .vscode/*

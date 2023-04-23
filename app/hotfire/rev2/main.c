@@ -4,9 +4,8 @@
 *       main.c
 *
 * DESCRIPTION: 
-*		Pings another XBee module and indicates to PC when a ping code has 
-*       received. Used to perform range testing and bidirectional communcation
-*       testing.	
+*		Interfaces between PC commands and the engine controller remotely 
+*       during a static hotfire test	
 *
 *******************************************************************************/
 
