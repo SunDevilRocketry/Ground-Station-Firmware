@@ -249,7 +249,6 @@ while ( 1 )
 			------------------------------------------------------------------*/
 			case VALVE_OP:
 				{
-				break;
 				/* Get subcommand */
 				usb_status = usb_receive( &subcommand, 
 				                          sizeof( subcommand ), 
@@ -291,6 +290,7 @@ while ( 1 )
 					              sizeof( response ), 
 								  HAL_DEFAULT_TIMEOUT );
 					}
+				break;
 				} /* VALVE_OP */
 
 			/*-----------------------------------------------------------------
