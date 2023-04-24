@@ -47,6 +47,7 @@ Standard Includes
 #define STOPPURGE_OP            ( 0x97 )
 #define ACK_OP                  ( 0x95 )
 #define NO_ACK_OP               ( 0x98 )
+#define HOTFIRE_GETSTATE_OP     ( 0x99 )
 
 
 /*------------------------------------------------------------------------------

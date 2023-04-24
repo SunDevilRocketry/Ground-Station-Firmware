@@ -484,6 +484,36 @@ while ( 1 )
 				} /* STOPPURGE_OP */
 
 			/*-----------------------------------------------------------------
+			 GETSTATE Command 
+			------------------------------------------------------------------*/
+			case HOTFIRE_GETSTATE_OP:
+				{
+				/* Send getstate command */
+				command = HOTFIRE_GETSTATE_OP;
+				rs485_status = rs485_transmit( &command         , 
+				                               sizeof( command ), 
+											   RS485_DEFAULT_TIMEOUT );
+				if ( rs485_status != RS485_OK )
+					{
+					led_set_color( LED_YELLOW );
+					break;
+					}
+				
+				/* Get state from engine controller */
+				rs485_status = rs485_receive( &response         , 
+				                              sizeof( response ), 
+											  RS485_DEFAULT_TIMEOUT );
+				if ( rs485_status != RS485_OK )
+					{
+					response = NO_ACK_OP;
+					}
+				
+				/* Send back to PC */
+				usb_transmit( &response, sizeof( response ), HAL_DEFAULT_TIMEOUT );
+				break;
+				}
+
+			/*-----------------------------------------------------------------
 			 Unrecognized Command 
 			------------------------------------------------------------------*/
 			default:
