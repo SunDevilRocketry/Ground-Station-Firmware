@@ -48,6 +48,7 @@ Standard Includes
 #define ACK_OP                  ( 0x95 )
 #define NO_ACK_OP               ( 0x98 )
 #define HOTFIRE_GETSTATE_OP     ( 0x99 )
+#define STOP_HOTFIRE_OP         ( 0x9A )
 
 
 /*------------------------------------------------------------------------------

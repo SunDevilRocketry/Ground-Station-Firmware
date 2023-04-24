@@ -514,6 +514,34 @@ while ( 1 )
 				}
 
 			/*-----------------------------------------------------------------
+			 STOPHOTFIRE Command 
+			------------------------------------------------------------------*/
+			case STOP_HOTFIRE_OP:
+				{
+				/* Send command */
+				command = STOP_HOTFIRE_OP;
+				rs485_status = rs485_transmit( &command, 
+				                               sizeof( command ), 
+											   RS485_DEFAULT_TIMEOUT );
+				if ( rs485_status != RS485_OK )
+					{
+					led_set_color( LED_YELLOW );
+					break;
+					}
+				
+				/* Get ACK signal */
+				rs485_status = rs485_receive( &response, 
+				                              sizeof( response ),
+											  RS485_DEFAULT_TIMEOUT );
+				if ( ( rs485_status != RS485_OK ) || ( response != ACK_OP ) )
+					{
+					response = NO_ACK_OP;
+					}
+				usb_transmit( &response, sizeof( response ), HAL_DEFAULT_TIMEOUT );
+				break;
+				}
+
+			/*-----------------------------------------------------------------
 			 Unrecognized Command 
 			------------------------------------------------------------------*/
 			default:
