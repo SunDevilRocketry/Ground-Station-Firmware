@@ -49,6 +49,12 @@ Standard Includes
 #define NO_ACK_OP               ( 0x98 )
 #define HOTFIRE_GETSTATE_OP     ( 0x99 )
 #define STOP_HOTFIRE_OP         ( 0x9A )
+#define LOX_PURGE_OP            ( 0x9B )
+#define TANKSTAT_OP             ( 0x9D )
+#define KBOTTLE_CLOSED_OP       ( 0x9C )
+
+/* Return codes */
+#define TELREQ_BUSY_CODE        ( 0x99 )
 
 
 /*------------------------------------------------------------------------------

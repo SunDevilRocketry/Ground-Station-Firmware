@@ -327,24 +327,28 @@ while ( 1 )
 				/* Send the TELREQ Command to the engine controller */
 				rs485_transmit( &command, sizeof( command ), RS485_DEFAULT_TIMEOUT );
 
-				/* Receive the sensor data */
-				rs485_status = rs485_receive( &sensor_data[0]      , 
-				                              sizeof( sensor_data ),
-											  sizeof( sensor_data )*RS485_DEFAULT_TIMEOUT );
-
-				/* Pass on the sensor data back to the PC */
+				/* Get ACK signal */
+				rs485_status = rs485_receive( &response, sizeof( response ), RS485_DEFAULT_TIMEOUT );
 				if ( rs485_status != RS485_OK )
 					{
 					send_no_ack();
 					}
+				else if ( response == TELREQ_BUSY_CODE )
+					{
+					usb_transmit( &response, sizeof( response ), HAL_DEFAULT_TIMEOUT );
+					}
 				else
 					{
 					send_ack();
-					usb_transmit( &sensor_data[0], 
-					              sizeof( sensor_data ), 
-								  sizeof( sensor_data )*HAL_DEFAULT_TIMEOUT );	
 					}
-				
+
+				/* Receive the sensor data */
+				rs485_status = rs485_receive( &sensor_data[0]      , 
+				                              sizeof( sensor_data ),
+											  sizeof( sensor_data )*RS485_DEFAULT_TIMEOUT );
+				usb_transmit( &sensor_data[0], 
+							  sizeof( sensor_data ), 
+							  sizeof( sensor_data )*HAL_DEFAULT_TIMEOUT );	
 				break;
 				} /* TELREQ_OP */
 
@@ -532,6 +536,72 @@ while ( 1 )
 				/* Get ACK signal */
 				rs485_status = rs485_receive( &response, 
 				                              sizeof( response ),
+											  RS485_DEFAULT_TIMEOUT );
+				if ( ( rs485_status != RS485_OK ) || ( response != ACK_OP ) )
+					{
+					response = NO_ACK_OP;
+					}
+				usb_transmit( &response, sizeof( response ), HAL_DEFAULT_TIMEOUT );
+				break;
+				}
+
+			/*-----------------------------------------------------------------
+			 TANKSTAT Command 
+			------------------------------------------------------------------*/
+			case TANKSTAT_OP:
+				{
+				/* Send command */
+				command = TANKSTAT_OP;
+				rs485_transmit( &command, sizeof( command ), RS485_DEFAULT_TIMEOUT );
+
+				/* Wait for response */
+				rs485_status = rs485_receive( &response, 
+				                              sizeof( response ), 
+											  RS485_DEFAULT_TIMEOUT );
+				if ( rs485_status != RS485_OK )
+					{
+					send_no_ack();
+					}
+				else
+					{
+					usb_transmit( &response, sizeof( response ), HAL_DEFAULT_TIMEOUT );
+					}
+				break;
+				}
+
+			/*-----------------------------------------------------------------
+			 LOX_PURGE Command 
+			------------------------------------------------------------------*/
+			case LOX_PURGE_OP:
+				{
+				/* Send command */
+				command = LOX_PURGE_OP;
+				rs485_transmit( &command, sizeof( command ), RS485_DEFAULT_TIMEOUT );
+
+				/* Wait for response */
+				rs485_status = rs485_receive( &response, 
+				                              sizeof( response ), 
+											  RS485_DEFAULT_TIMEOUT );
+				if ( ( rs485_status != RS485_OK ) || ( response != ACK_OP ) )
+					{
+					response = NO_ACK_OP;
+					}
+				usb_transmit( &response, sizeof( response ), HAL_DEFAULT_TIMEOUT );
+				break;
+				}
+
+			/*-----------------------------------------------------------------
+			 KBOTTLE Command 
+			------------------------------------------------------------------*/
+			case KBOTTLE_CLOSED_OP:
+				{
+				/* Send command */
+				command = KBOTTLE_CLOSED_OP;
+				rs485_transmit( &command, sizeof( command ), RS485_DEFAULT_TIMEOUT );
+
+				/* Wait for response */
+				rs485_status = rs485_receive( &response, 
+				                              sizeof( response ), 
 											  RS485_DEFAULT_TIMEOUT );
 				if ( ( rs485_status != RS485_OK ) || ( response != ACK_OP ) )
 					{
