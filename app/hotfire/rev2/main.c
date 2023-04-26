@@ -209,37 +209,12 @@ while ( 1 )
 					}
 				
 				/* Pass on command and subcommand to engine controller */
-				rs485_status = rs485_transmit( &command         , 
-				                               sizeof( command ), 
-											   RS485_DEFAULT_TIMEOUT );
-				if ( rs485_status != RS485_OK )
-					{
-					send_no_ack();
-					break;
-					}
-				rs485_status = rs485_transmit( &subcommand         , 
-				                               sizeof( subcommand ), 
-											   RS485_DEFAULT_TIMEOUT );				
-				if ( rs485_status != RS485_OK )
-					{
-					send_no_ack();
-					break;
-					}
-	
-				/* Wait for acknowledge signal/response */
-				rs485_status = rs485_receive( &response         , 
-				                              sizeof( response ), 
-											  RS485_DEFAULT_TIMEOUT );
-				if ( rs485_status != RS485_OK )
-					{
-					send_no_ack();
-					}
-				else
-					{
-					usb_transmit( &response, 
-					              sizeof( response ), 
-								  HAL_DEFAULT_TIMEOUT );
-					}
+				rs485_transmit( &command         , 
+				               sizeof( command ), 
+							   RS485_DEFAULT_TIMEOUT );
+				rs485_transmit( &subcommand         , 
+				                sizeof( subcommand ), 
+								RS485_DEFAULT_TIMEOUT );				
 				break;
 				} /* SOL_OP */
 
@@ -248,7 +223,6 @@ while ( 1 )
 			------------------------------------------------------------------*/
 			case VALVE_OP:
 				{
-				break;
 				/* Get subcommand */
 				usb_status = usb_receive( &subcommand, 
 				                          sizeof( subcommand ), 
@@ -262,34 +236,10 @@ while ( 1 )
 				rs485_status = rs485_transmit( &command         , 
 				                               sizeof( command ), 
 											   RS485_DEFAULT_TIMEOUT );
-				if ( rs485_status != RS485_OK )
-					{
-					send_no_ack();
-					break;
-					}
 				rs485_status = rs485_transmit( &subcommand         , 
 				                               sizeof( subcommand ), 
 											   RS485_DEFAULT_TIMEOUT );				
-				if ( rs485_status != RS485_OK )
-					{
-					send_no_ack();
-					break;
-					}
-	
-				/* Wait for acknowledge signal */
-				rs485_status = rs485_receive( &response         , 
-				                              sizeof( response ), 
-											  RS485_DEFAULT_TIMEOUT );
-				if ( rs485_status != RS485_OK )
-					{
-					send_no_ack();
-					}
-				else
-					{
-					usb_transmit( &response, 
-					              sizeof( response ), 
-								  HAL_DEFAULT_TIMEOUT );
-					}
+				break;
 				} /* VALVE_OP */
 
 			/*-----------------------------------------------------------------
@@ -597,6 +547,27 @@ while ( 1 )
 				{
 				/* Send command */
 				command = KBOTTLE_CLOSED_OP;
+				rs485_transmit( &command, sizeof( command ), RS485_DEFAULT_TIMEOUT );
+
+				/* Wait for response */
+				rs485_status = rs485_receive( &response, 
+				                              sizeof( response ), 
+											  RS485_DEFAULT_TIMEOUT );
+				if ( ( rs485_status != RS485_OK ) || ( response != ACK_OP ) )
+					{
+					response = NO_ACK_OP;
+					}
+				usb_transmit( &response, sizeof( response ), HAL_DEFAULT_TIMEOUT );
+				break;
+				}
+
+			/*-----------------------------------------------------------------
+			 MANUAL Command 
+			------------------------------------------------------------------*/
+			case MANUAL_OP:
+				{
+				/* Send command */
+				command = MANUAL_OP;
 				rs485_transmit( &command, sizeof( command ), RS485_DEFAULT_TIMEOUT );
 
 				/* Wait for response */

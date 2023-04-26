@@ -52,6 +52,7 @@ Standard Includes
 #define LOX_PURGE_OP            ( 0x9B )
 #define TANKSTAT_OP             ( 0x9D )
 #define KBOTTLE_CLOSED_OP       ( 0x9C )
+#define MANUAL_OP               ( 0x9E )
 
 /* Return codes */
 #define TELREQ_BUSY_CODE        ( 0x99 )
