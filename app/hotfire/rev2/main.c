@@ -82,6 +82,7 @@ uint8_t subcommand;                           /* SDEC subcommand              */
 uint8_t board_code;                           /* Ping code of connected board */
 uint8_t response;                             /* Response from engine         */
 uint8_t sensor_data[ sizeof( SENSOR_DATA ) ]; /* Data from engine sensors     */
+uint8_t valve_states;                         /* State of the engine valves   */
 #ifdef USE_RS485
 	RS485_STATUS rs485_status; /* RS485 return codes                  */
 #else
@@ -98,7 +99,8 @@ USB_STATUS usb_status;         /* Status of USB module                */
 #else
 	rf_status    = RF_OK;
 #endif
-usb_status = USB_OK;
+usb_status   = USB_OK;
+valve_states = 0;
 memset( &sensor_data[0], 0, sizeof( sensor_data ) );
 
 
@@ -292,13 +294,17 @@ while ( 1 )
 					send_ack();
 					}
 
-				/* Receive the sensor data */
-				rs485_status = rs485_receive( &sensor_data[0]      , 
-				                              sizeof( sensor_data ),
-											  sizeof( sensor_data )*RS485_DEFAULT_TIMEOUT );
+				/* Receive the sensor data and valve state */
+				rs485_receive( &sensor_data[0]      , 
+				               sizeof( sensor_data ),
+							   sizeof( sensor_data )*RS485_DEFAULT_TIMEOUT );
+				rs485_receive( &valve_states, sizeof( valve_states ), RS485_DEFAULT_TIMEOUT );
+
+				/* Send data to PC */	
 				usb_transmit( &sensor_data[0], 
 							  sizeof( sensor_data ), 
 							  sizeof( sensor_data )*HAL_DEFAULT_TIMEOUT );	
+				usb_transmit( &valve_states, sizeof( valve_states ), HAL_DEFAULT_TIMEOUT );
 				break;
 				} /* TELREQ_OP */
 
