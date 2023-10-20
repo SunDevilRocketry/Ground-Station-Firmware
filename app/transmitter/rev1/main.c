@@ -29,6 +29,7 @@
 #include "led.h"
 #include "usb.h"
 #include "wireless.h"
+#include "commands.h"
 
 
 /*------------------------------------------------------------------------------
@@ -55,9 +56,9 @@ int main
  Local Variables 
 ------------------------------------------------------------------------------*/
 /* USB */
-uint8_t    firmware_code;                   /* Firmware identifying code   */
-uint8_t	   rx_usb_data; /* USB incoming data buffer */
-USB_STATUS usb_status;  /* Status of USB module               */
+uint8_t    firmware_code;                   /* Firmware identifying code   	*/
+uint8_t	   rx_usb_data; 					/* USB incoming data buffer 	*/
+USB_STATUS usb_status;  					/* Status of USB module     	*/
 
 /* RF */
 uint8_t    tx_byte;     /* Byte to transmit with wireless module */
