@@ -54,8 +54,13 @@ int main
 /*------------------------------------------------------------------------------
  Local Variables 
 ------------------------------------------------------------------------------*/
-uint8_t    tx_byte;     /* Byte to transmit with wireless module */
+/* USB */
+uint8_t    firmware_code;                   /* Firmware identifying code   */
+uint8_t	   rx_usb_data; /* USB incoming data buffer */
 USB_STATUS usb_status;  /* Status of USB module               */
+
+/* RF */
+uint8_t    tx_byte;     /* Byte to transmit with wireless module */
 RF_STATUS  rf_status;   /* Status of wireless module          */
 
 
@@ -79,6 +84,10 @@ USB_UART_Init     ();   /* USB       */
 /* Indicate Successful Initialization */
 led_set_color( LED_GREEN );
 
+/*------------------------------------------------------------------------------
+ External Hardware Initializations 
+------------------------------------------------------------------------------*/
+firmware_code = FIRMWARE_GD_TRANSMITTER;
 
 /*------------------------------------------------------------------------------
 Event Loop                                                                  
@@ -86,14 +95,33 @@ Event Loop
 while (1)
 	{
 	/* Receive byte from USB port */
-	usb_status = usb_receive( &tx_byte         , 
+	usb_status = usb_receive( &rx_usb_data     , 
                               sizeof( uint8_t ), 
                               HAL_DEFAULT_TIMEOUT );
 
 	/* Transmit byte with wireless module */
 	if ( usb_status != USB_TIMEOUT )
+		switch (rx_usb_data)
 		{
-		switch ( wireless_mod )
+		case PING_OP:
+		{
+			ping();
+			break;
+		}
+		case CONNECT_OP:
+		{
+			ping();
+
+			/* TODO: Add firmware version code */
+			usb_transmit( &firmware_code	,
+						  sizeof( uint8_t ),
+						  HAL_DEFAULT_TIMEOUT	
+						 );
+			break;
+		}
+		case SEND_OP:
+		{
+			switch ( wireless_mod )
 			{
 			case XBEE:
 				{
@@ -118,7 +146,12 @@ while (1)
 				break;
 				}
 			}
+			break;
 		}
+		default:
+			break;
+		}
+		
 	else
 		{
 		/* USB timeout, do noting until next byte arrives */
