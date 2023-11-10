@@ -39,6 +39,7 @@
 /* MCU Peripheral handles */
 UART_HandleTypeDef huart4; /* Xbee UART */
 UART_HandleTypeDef huart1; /* USB UART  */
+SPI_HandleTypeDef  hspi2;
 
 /* Wireless Module Settings */
 WIRELESS_MOD_CODES wireless_mod = XBEE;
@@ -81,6 +82,7 @@ SystemClock_Config();   /* SysClock  */
 GPIO_Init         ();   /* GPIO Pins */
 XBee_UART_Init    ();   /* XBee      */
 USB_UART_Init     ();   /* USB       */
+Lora_SPI_Init	  ();
 
 /* Indicate Successful Initialization */
 led_set_color( LED_GREEN );
