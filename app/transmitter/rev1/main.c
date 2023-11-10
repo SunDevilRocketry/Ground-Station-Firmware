@@ -100,8 +100,15 @@ while (1)
                               sizeof( uint8_t ), 
                               HAL_DEFAULT_TIMEOUT );
 
+	if (usb_status == USB_FAIL)
+	{
+		led_set_color(LED_RED);
+	}
+
 	/* Transmit byte with wireless module */
 	if ( usb_status != USB_TIMEOUT )
+	{
+		led_set_color(LED_WHITE);
 		switch (rx_usb_data)
 		{
 		case PING_OP:
@@ -126,7 +133,8 @@ while (1)
 			{
 			case XBEE:
 				{
-				rf_status = rf_xbee_transmit_byte( tx_byte );
+				uint8_t sample_code = 0x69;
+				rf_status = rf_xbee_transmit_byte( sample_code );
 				if ( rf_status != RF_OK )
 					{
 					Error_Handler( ERROR_RF_ERROR );
@@ -152,6 +160,8 @@ while (1)
 		default:
 			break;
 		}
+	}
+		
 		
 	else
 		{
