@@ -52,29 +52,36 @@ $(UTIL_DIR)/sdr_error.c                                             \
 $(INIT_DIR)/config/Src/stm32h7xx_it.c                               \
 $(INIT_DIR)/config/Src/stm32h7xx_hal_msp.c                          \
 $(INIT_DIR)/config/Src/system_stm32h7xx.c                           \
-$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_cortex.c  \
-$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_tim.c      \
-$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_tim_ex.c   \
-$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rcc.c      \
-$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rcc_ex.c   \
-$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_flash.c    \
-$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_flash_ex.c \
-$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_gpio.c     \
-$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_hsem.c     \
-$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_dma.c      \
-$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_dma_ex.c   \
-$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_mdma.c     \
-$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_pwr.c      \
-$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_pwr_ex.c   \
-$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal.c          \
-$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_i2c.c      \
-$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_i2c_ex.c   \
-$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_exti.c     \
-$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart.c    \
-$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart_ex.c \
+$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_cortex.c    \
+$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rcc.c       \
+$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rcc_ex.c    \
+$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_flash.c     \
+$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_flash_ex.c  \
+$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_gpio.c      \
+$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_hsem.c      \
+$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_dma.c       \
+$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_dma_ex.c    \
+$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_mdma.c      \
+$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_pwr.c       \
+$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_pwr_ex.c    \
+$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal.c           \
+$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_i2c.c       \
+$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_i2c_ex.c    \
+$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_exti.c      \
+$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_tim.c       \
+$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_tim_ex.c    \
+$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart.c      \
+$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart_ex.c   \
+$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_spi.c       \
+$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_spi_ex.c    \
+$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_ll_sdmmc.c      \
+$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_ll_delayblock.c \
+$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_sd.c        \
+$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_sd_ex.c     \
 $(MOD_DIR)/led/led.c                                                \
 $(MOD_DIR)/usb/usb.c                                                \
-$(MOD_DIR)/wireless/wireless.c
+$(MOD_DIR)/wireless/wireless.c										\
+$(MOD_DIR)/commands/commands.c										
 
 
 # ASM sources
@@ -127,6 +134,7 @@ AS_DEFS =
 C_DEFS =         \
 -DUSE_HAL_DRIVER \
 -DGROUND_STATION \
+-DA0005_REV1 	 \
 -DSTM32H750xx
 
 
@@ -137,12 +145,13 @@ AS_INCLUDES =
 C_INCLUDES =                                           \
 -I.                                                    \
 -I$(INIT_DIR)                                          \
--I$(INIT_DIR)/config/Inc                               \
 -I$(UTIL_DIR)                                          \
+-I$(INIT_DIR)/config/Inc                               \
 -I$(LIB_DIR)                                           \
 -I$(MOD_DIR)/led                                       \
 -I$(MOD_DIR)/wireless                                  \
 -I$(MOD_DIR)/usb                                       \
+-I$(MOD_DIR)/commands                                  \
 -I$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Inc          \
 -I$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Inc/Legacy   \
 -I$(LIB_DIR)/Drivers/CMSIS/Device/ST/STM32H7xx/Include \
@@ -226,7 +235,13 @@ erase:
 ################################################################
 clean:
 	-rm -fR $(BUILD_DIR)
-  
+
+################################################################
+# debug
+################################################################
+debug:
+	arm-none-eabi-gdb /build/reciever.elf
+
 ################################################################
 # dependencies
 ################################################################

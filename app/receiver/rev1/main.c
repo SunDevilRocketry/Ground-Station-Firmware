@@ -29,7 +29,7 @@ Project Includes
 #include "led.h"
 #include "usb.h"
 #include "wireless.h"
-
+#include "commands.h"
 
 /*------------------------------------------------------------------------------
 Global Variables                                                                  
@@ -38,9 +38,10 @@ Global Variables
 /* MCU Peripheral handles */
 UART_HandleTypeDef huart4; /* Xbee UART */
 UART_HandleTypeDef huart1; /* USB UART  */
+SPI_HandleTypeDef  hspi2;  /* LoRa SPI */
 
 /* Wireless Module Settings */
-WIRELESS_MOD_CODES wireless_mod = XBEE;
+WIRELESS_MOD_CODES wireless_mod = LORA;
 
 
 /*------------------------------------------------------------------------------
@@ -54,6 +55,7 @@ int main
 /*------------------------------------------------------------------------------
  Local Variables 
 ------------------------------------------------------------------------------*/
+uint8_t    firmware_code;                   /* Firmware identifying code   	*/
 uint8_t    rx_byte;     /* Byte recieved from Wireless module */
 USB_STATUS usb_status;  /* Status of USB module               */
 RF_STATUS  rf_status;   /* Status of wireless module          */
@@ -62,9 +64,15 @@ RF_STATUS  rf_status;   /* Status of wireless module          */
 /*------------------------------------------------------------------------------
  Initializations
 ------------------------------------------------------------------------------*/
+/* USB */
+uint8_t	   rx_usb_data; 					/* USB incoming data buffer 	*/
+usb_status = USB_OK;
+
+/* RF */
 rf_status  = RF_TIMEOUT;
 rx_byte    = 0;
-usb_status = USB_OK;
+rf_status  = RF_OK;
+
 
 
 /*------------------------------------------------------------------------------
@@ -79,51 +87,89 @@ USB_UART_Init     ();   /* USB       */
 /* Indicate Successful Initialization */
 led_set_color( LED_GREEN );
 
+/*------------------------------------------------------------------------------
+ External Hardware Initializations 
+------------------------------------------------------------------------------*/
+firmware_code = FIRMWARE_GD_RECEIVER;
 
 /*------------------------------------------------------------------------------
  Event Loop                                                                  
 ------------------------------------------------------------------------------*/
 while (1)
 	{
-	/* Recieve Byte from Wireless module */
-	switch ( wireless_mod )
+		/* Receive byte from USB port */
+		usb_status = usb_receive( &rx_usb_data     , 
+								sizeof( uint8_t ), 
+								HAL_DEFAULT_TIMEOUT );
+
+		if (usb_status == USB_FAIL)
 		{
-		case XBEE:
-			{
-			rf_status = rf_xbee_receive_byte( &rx_byte );
-			break;
-			}
-		case LORA:
-			{
-			// TODO: Implement rf_lora_receive_byte function 
-			// TODO: Remove Error_Handler()
-			Error_Handler( ERROR_UNSUPPORTED_OP_ERROR );
-			break;	
-			}
-		default:
-			{
-			/* Unrecognized module: invoke error handler */
-			Error_Handler( ERROR_UNSUPPORTED_OP_ERROR );
-			break;
-			}
+			led_set_color(LED_RED);
 		}
 
-	/* Transmit byte to PC over USB */
-	if ( rf_status != RF_TIMEOUT )
+		/* Transmit byte with wireless module */
+		if ( usb_status != USB_TIMEOUT )
 		{
-	    usb_status = usb_transmit( &rx_byte         , 
-                                   sizeof( uint8_t ),
-                                   HAL_DEFAULT_TIMEOUT  );
-		if ( usb_status != USB_OK )
+			led_set_color(LED_WHITE);
+			switch (rx_usb_data)
 			{
-			Error_Handler( ERROR_USB_UART_ERROR );
+				case PING_OP:
+				{
+					ping();
+					break;
+				}
+				case CONNECT_OP:
+				{
+					ping();
+
+					/* TODO: Add firmware version code */
+					usb_transmit( &firmware_code	,
+								sizeof( uint8_t ),
+								HAL_DEFAULT_TIMEOUT	
+								);
+					break;
+				}
+				case SEND_OP:
+				{
+					/* Recieve Byte from Wireless module */
+					switch ( wireless_mod )
+						{
+						case XBEE:
+							{
+							rf_status = rf_xbee_receive_byte( &rx_byte );
+							break;
+							}
+						case LORA:
+							{
+							// TODO: Implement rf_lora_receive_byte function 
+							// TODO: Remove Error_Handler()
+							Error_Handler( ERROR_UNSUPPORTED_OP_ERROR );
+							break;	
+							}
+						default:
+							{
+							/* Unrecognized module: invoke error handler */
+							Error_Handler( ERROR_UNSUPPORTED_OP_ERROR );
+							break;
+							}
+						}
+
+					/* Transmit byte to PC over USB */
+					if ( rf_status != RF_TIMEOUT )
+						{
+						usb_status = usb_transmit( &rx_byte         , 
+												sizeof( uint8_t ),
+												HAL_DEFAULT_TIMEOUT  );
+						if ( usb_status != USB_OK )
+							{
+							Error_Handler( ERROR_USB_UART_ERROR );
+							}
+						}
+				} /* while (1) */
 			}
 		}
-	} /* while (1) */
-
-} /* main */
-
-
+	} /* main */
+}
 /*******************************************************************************
 * END OF FILE                                                                  *
 *******************************************************************************/
