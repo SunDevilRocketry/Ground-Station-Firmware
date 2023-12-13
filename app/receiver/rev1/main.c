@@ -30,6 +30,7 @@ Project Includes
 #include "usb.h"
 #include "wireless.h"
 #include "commands.h"
+#include "LoRa.h"
 
 /*------------------------------------------------------------------------------
 Global Variables                                                                  
@@ -84,13 +85,22 @@ GPIO_Init         ();   /* GPIO Pins */
 XBee_UART_Init    ();   /* XBee      */
 USB_UART_Init     ();   /* USB       */
 
-/* Indicate Successful Initialization */
-led_set_color( LED_GREEN );
-
 /*------------------------------------------------------------------------------
  External Hardware Initializations 
 ------------------------------------------------------------------------------*/
 firmware_code = FIRMWARE_GD_RECEIVER;
+
+/* Init LoRa Object */
+lora_sx1276 lora;
+uint8_t res = lora_init(&lora, &hspi2, LORA_SS_GPIO_PORT, LORA_SS_PIN, LORA_BASE_FREQUENCY_US);
+while (res != LORA_OK) {
+    // Initialization failed
+	led_set_color( LED_PURPLE );
+  }
+
+/* Indicate Successful Initialization */
+led_set_color( LED_GREEN );
+
 
 /*------------------------------------------------------------------------------
  Event Loop                                                                  

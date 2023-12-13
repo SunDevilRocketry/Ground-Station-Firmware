@@ -81,7 +81,8 @@ $(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_sd_ex.c     \
 $(MOD_DIR)/led/led.c                                                \
 $(MOD_DIR)/usb/usb.c                                                \
 $(MOD_DIR)/wireless/wireless.c										\
-$(MOD_DIR)/commands/commands.c										
+$(MOD_DIR)/commands/commands.c										\
+$(MOD_DIR)/lora_sx1276/LoRa.c                                        
 
 
 # ASM sources
@@ -152,6 +153,7 @@ C_INCLUDES =                                           \
 -I$(MOD_DIR)/wireless                                  \
 -I$(MOD_DIR)/usb                                       \
 -I$(MOD_DIR)/commands                                  \
+-I$(MOD_DIR)/lora_sx1276                               \
 -I$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Inc          \
 -I$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Inc/Legacy   \
 -I$(LIB_DIR)/Drivers/CMSIS/Device/ST/STM32H7xx/Include \

@@ -144,7 +144,7 @@ void Lora_SPI_Init
   hspi2.Init.IOSwap = SPI_IO_SWAP_DISABLE;
   if (HAL_SPI_Init(&hspi2) != HAL_OK)
   {
-    Error_Handler(ERROR_LORA_SPI_CONFIG_ERROR);
+    Error_Handler(ERROR_LORA_SPI_INIT_ERROR);
   }
 
 }
