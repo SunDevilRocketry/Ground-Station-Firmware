@@ -73,7 +73,7 @@ usb_status = USB_OK;
 rf_status  = RF_TIMEOUT;
 rx_byte    = 0;
 rf_status  = RF_OK;
-
+uint8_t packet_buffer[32];
 
 
 /*------------------------------------------------------------------------------
@@ -94,9 +94,9 @@ firmware_code = FIRMWARE_GD_RECEIVER;
 lora_sx1276 lora;
 uint8_t res = lora_init(&lora, &hspi2, LORA_SS_GPIO_PORT, LORA_SS_PIN, LORA_BASE_FREQUENCY_US);
 while (res != LORA_OK) {
-    // Initialization failed
+	// Initialization failed
 	led_set_color( LED_PURPLE );
-  }
+}
 
 /* Indicate Successful Initialization */
 led_set_color( LED_GREEN );
@@ -151,9 +151,28 @@ while (1)
 							}
 						case LORA:
 							{
-							// TODO: Implement rf_lora_receive_byte function 
-							// TODO: Remove Error_Handler()
-							Error_Handler( ERROR_UNSUPPORTED_OP_ERROR );
+							// Put LoRa modem into continuous receive mode
+							lora_mode_receive_continuous(&lora);
+							
+							/* Begin Listening */
+							while (1)
+							{
+								/* LoRa Receive packet using blocking mode */
+								uint8_t len = lora_receive_packet_blocking(&lora, packet_buffer, sizeof(packet_buffer), 10000, &res);
+
+								/* Transmit byte to PC over USB */
+								if ( res == LORA_OK )
+									{
+									usb_status = usb_transmit( &packet_buffer         , 
+															sizeof( packet_buffer ),
+															HAL_DEFAULT_TIMEOUT  );
+									if ( usb_status != USB_OK )
+										{
+										Error_Handler( ERROR_USB_UART_ERROR );
+										}
+									}
+							}
+
 							break;	
 							}
 						default:
@@ -164,17 +183,17 @@ while (1)
 							}
 						}
 
-					/* Transmit byte to PC over USB */
-					if ( rf_status != RF_TIMEOUT )
-						{
-						usb_status = usb_transmit( &rx_byte         , 
-												sizeof( uint8_t ),
-												HAL_DEFAULT_TIMEOUT  );
-						if ( usb_status != USB_OK )
-							{
-							Error_Handler( ERROR_USB_UART_ERROR );
-							}
-						}
+					// /* Transmit byte to PC over USB */
+					// if ( rf_status != RF_TIMEOUT )
+					// 	{
+					// 	usb_status = usb_transmit( &rx_byte         , 
+					// 							sizeof( uint8_t ),
+					// 							HAL_DEFAULT_TIMEOUT  );
+					// 	if ( usb_status != USB_OK )
+					// 		{
+					// 		Error_Handler( ERROR_USB_UART_ERROR );
+					// 		}
+					// 	}
 				} /* while (1) */
 			}
 		}
