@@ -35,6 +35,7 @@ extern "C" {
 void SystemClock_Config      ( void );      /* clock configuration            */
 void GPIO_Init               ( void );      /* GPIO configurations            */
 void USB_UART_Init           ( void );      /* USB UART configuration         */
+void LORA_SPI_Init           ( void );      /* LORA SPI configuration         */
 
 #ifdef __cplusplus
 }

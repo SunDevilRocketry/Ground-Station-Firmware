@@ -36,6 +36,7 @@
 
 /* MCU Peripheral handles */
 UART_HandleTypeDef huart1; /* USB UART  */
+SPI_HandleTypeDef  hspi2;  /* LORA SPI */
 
 /*------------------------------------------------------------------------------
  Application entry point                                                      
