@@ -74,7 +74,8 @@ $(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart.c    \
 $(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart_ex.c \
 $(MOD_DIR)/led/led.c                                                \
 $(MOD_DIR)/usb/usb.c                                                \
-$(MOD_DIR)/lora/lora.c
+$(MOD_DIR)/lora/lora.c												\
+$(MOD_DIR)/commands/commands.c												
 
 
 # ASM sources
@@ -127,7 +128,8 @@ AS_DEFS =
 C_DEFS =         \
 -DUSE_HAL_DRIVER \
 -DGROUND_STATION \
--DSTM32H750xx
+-DSTM32H750xx	 \
+-DA0005_REV3
 
 
 # AS includes
@@ -143,6 +145,7 @@ C_INCLUDES =                                           \
 -I$(MOD_DIR)/led                                       \
 -I$(MOD_DIR)/lora	                                   \
 -I$(MOD_DIR)/usb                                       \
+-I$(MOD_DIR)/commands                                  \
 -I$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Inc          \
 -I$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Inc/Legacy   \
 -I$(LIB_DIR)/Drivers/CMSIS/Device/ST/STM32H7xx/Include \

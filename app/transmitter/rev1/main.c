@@ -28,7 +28,7 @@
 /* SDR Modules */
 #include "led.h"
 #include "usb.h"
-
+#include "commands.h"
 
 /*------------------------------------------------------------------------------
  Global Variables                                                                  
@@ -49,16 +49,20 @@ int main
 /*------------------------------------------------------------------------------
  Local Variables 
 ------------------------------------------------------------------------------*/
-uint8_t    tx_byte;     /* Byte to transmit with wireless module */
-USB_STATUS usb_status;  /* Status of USB module               */
-
+uint8_t     subcommand_code;                   /* Subcommand opcode           */
+uint8_t    	usb_rx_byte;     				   /* Byte to transmit with wireless module */
+USB_STATUS 	usb_status;  					   /* Status of USB module               */
+uint8_t		firmware_code;					   /* Board configuration */
 
 /*------------------------------------------------------------------------------
  Initializations 
 ------------------------------------------------------------------------------*/
-tx_byte    = 0;
+usb_rx_byte    = 0;
 usb_status = USB_OK;
 
+
+/* General Board configuration */
+firmware_code                 = FIRMWARE_FGD_TRANSMITTER;                   
 
 /*------------------------------------------------------------------------------
  MCU Initialization                                                                  
@@ -67,6 +71,7 @@ HAL_Init          ();   /* CMSIS HAL */
 SystemClock_Config();   /* SysClock  */
 GPIO_Init         ();   /* GPIO Pins */
 USB_UART_Init     ();   /* USB       */
+LORA_SPI_Init	  ();	/* LORA		 */
 
 /* Indicate Successful Initialization */
 led_set_color( LED_GREEN );
@@ -78,10 +83,40 @@ Event Loop
 while (1)
 	{
 	/* Receive byte from USB port */
-	usb_status = usb_receive( &tx_byte         , 
+	usb_status = usb_receive( &usb_rx_byte         , 
                               sizeof( uint8_t ), 
-                              HAL_DEFAULT_TIMEOUT );
+                              200 );
 	}
+
+	if ( usb_status == USB_OK )
+	{
+	switch ( usb_rx_byte )
+		{
+		/*-------------------------------------------------------------
+			CONNECT_OP	
+		-------------------------------------------------------------*/
+		case CONNECT_OP:
+			{
+			/* Send board identifying code    */
+			ping();
+
+			/* Send firmware identifying code */
+			usb_transmit( &firmware_code   , 
+						sizeof( uint8_t ), 
+						HAL_DEFAULT_TIMEOUT );
+			break;
+			} /* CONNECT_OP */
+		/*-------------------------------------------------------------
+			Unrecognized command code  
+		-------------------------------------------------------------*/
+		default:
+			{
+			//Error_Handler();
+			break;
+			}
+
+		} /* switch( usb_rx_data ) */
+	} /* if ( usb_status != USB_OK ) */
 
 } /* main */
 
