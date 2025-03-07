@@ -35,8 +35,6 @@ extern "C" {
 void SystemClock_Config      ( void );      /* clock configuration            */
 void GPIO_Init               ( void );      /* GPIO configurations            */
 void USB_UART_Init           ( void );      /* USB UART configuration         */
-void XBee_UART_Init          ( void );      /* XBee UART configuration        */
-
 
 #ifdef __cplusplus
 }
