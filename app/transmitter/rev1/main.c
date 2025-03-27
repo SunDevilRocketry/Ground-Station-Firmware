@@ -76,7 +76,6 @@ LORA_SPI_Init	  ();	/* LORA		 */
 /* Indicate Successful Initialization */
 led_set_color( LED_GREEN );
 
-
 /*------------------------------------------------------------------------------
 Event Loop                                                                  
 ------------------------------------------------------------------------------*/
@@ -86,40 +85,40 @@ while (1)
 	usb_status = usb_receive( &usb_rx_byte         , 
                               sizeof( uint8_t ), 
                               200 );
-	}
 
 	if ( usb_status == USB_OK )
 	{
-	switch ( usb_rx_byte )
-		{
-		/*-------------------------------------------------------------
-			CONNECT_OP	
-		-------------------------------------------------------------*/
-		case CONNECT_OP:
+		switch ( usb_rx_byte )
 			{
-			/* Send board identifying code    */
-			ping();
+			/*-------------------------------------------------------------
+				CONNECT_OP	
+			-------------------------------------------------------------*/
+			case CONNECT_OP:
+				{
+				led_set_color(LED_YELLOW);
+				/* Send board identifying code    */
+				ping();
 
-			/* Send firmware identifying code */
-			usb_transmit( &firmware_code   , 
-						sizeof( uint8_t ), 
-						HAL_DEFAULT_TIMEOUT );
-			break;
-			} /* CONNECT_OP */
-		/*-------------------------------------------------------------
-			Unrecognized command code  
-		-------------------------------------------------------------*/
-		default:
-			{
-			//Error_Handler();
-			break;
-			}
+				/* Send firmware identifying code */
+				usb_transmit( &firmware_code   , 
+							sizeof( uint8_t ), 
+							HAL_DEFAULT_TIMEOUT );
+				break;
+				} /* CONNECT_OP */
+			/*-------------------------------------------------------------
+				Unrecognized command code  
+			-------------------------------------------------------------*/
+			default:
+				{
+				//Error_Handler();
+				break;
+				}
 
-		} /* switch( usb_rx_data ) */
-	} /* if ( usb_status != USB_OK ) */
+			} /* switch( usb_rx_data ) */
+		} /* if ( usb_status != USB_OK ) */
 
-} /* main */
-
+	} /* main */
+}
 
 /*******************************************************************************
 * END OF FILE                                                                  *
