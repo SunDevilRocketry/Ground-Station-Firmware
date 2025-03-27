@@ -29,6 +29,7 @@
 #include "led.h"
 #include "usb.h"
 #include "commands.h"
+#include "lora.h"
 
 /*------------------------------------------------------------------------------
  Global Variables                                                                  
@@ -75,6 +76,42 @@ LORA_SPI_Init	  ();	/* LORA		 */
 
 /* Indicate Successful Initialization */
 led_set_color( LED_GREEN );
+
+
+/* Testing Purposes */
+lora_reset();
+
+LORA_CONFIG lora_config = {
+	LORA_SLEEP_MODE,
+	LORA_SPREAD_6,
+	LORA_BANDWIDTH_7_8_KHZ,
+	LORA_ECR_4_5,
+	LORA_IMPLICIT_HEADER,
+	915
+};
+
+uint8_t device_id = 0;
+
+LORA_STATUS lora_status = LORA_OK;
+
+lora_status = lora_get_device_id(&device_id);
+
+lora_status = lora_init(&lora_config);
+
+/* Testing Purpose */
+uint8_t operation_mode_register;
+LORA_STATUS read_status1 = lora_read_register( LORA_REG_OPERATION_MODE, &operation_mode_register );
+
+uint8_t modem_config1_register;
+LORA_STATUS read_status2 = lora_read_register( LORA_REG_NUM_RX_BYTES, &modem_config1_register );
+
+uint8_t modem_config2_register;
+LORA_STATUS read_status3 = lora_read_register( LORA_REG_RX_HEADER_INFO, &modem_config2_register );
+
+uint8_t freq_reg;
+LORA_STATUS read_status4 = lora_read_register( LORA_REG_FREQ_MSB, &freq_reg );
+LORA_STATUS read_status5 = lora_read_register( LORA_REG_FREQ_MSD, &freq_reg );
+LORA_STATUS read_status6 = lora_read_register( LORA_REG_FREQ_LSB, &freq_reg );
 
 /*------------------------------------------------------------------------------
 Event Loop                                                                  

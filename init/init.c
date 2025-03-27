@@ -73,7 +73,7 @@ RCC_OscInitStruct.PLL.PLLSource  = RCC_PLLSOURCE_HSE;
 RCC_OscInitStruct.PLL.PLLM       = 2;
 RCC_OscInitStruct.PLL.PLLN       = 12;
 RCC_OscInitStruct.PLL.PLLP       = 2;
-RCC_OscInitStruct.PLL.PLLQ       = 15;
+RCC_OscInitStruct.PLL.PLLQ       = 30;
 RCC_OscInitStruct.PLL.PLLR       = 2;
 RCC_OscInitStruct.PLL.PLLRGE     = RCC_PLL1VCIRANGE_3;
 RCC_OscInitStruct.PLL.PLLVCOSEL  = RCC_PLL1VCOMEDIUM;
@@ -172,7 +172,7 @@ void LORA_SPI_Init
 hspi2.Instance = SPI2;
 hspi2.Init.Mode = SPI_MODE_MASTER;
 hspi2.Init.Direction = SPI_DIRECTION_2LINES;
-hspi2.Init.DataSize = SPI_DATASIZE_4BIT;
+hspi2.Init.DataSize = SPI_DATASIZE_8BIT;
 hspi2.Init.CLKPolarity = SPI_POLARITY_LOW;
 hspi2.Init.CLKPhase = SPI_PHASE_1EDGE;
 hspi2.Init.NSS = SPI_NSS_SOFT;
@@ -217,8 +217,10 @@ GPIO_InitTypeDef GPIO_InitStruct = {0};
 
 /* GPIO Ports Clock Enable */
 __HAL_RCC_GPIOH_CLK_ENABLE();
+__HAL_RCC_GPIOC_CLK_ENABLE();
 __HAL_RCC_GPIOA_CLK_ENABLE();
 __HAL_RCC_GPIOE_CLK_ENABLE();
+__HAL_RCC_GPIOB_CLK_ENABLE();
 
 /*--------------------------- LED MCU PINS -----------------------------------*/
 
