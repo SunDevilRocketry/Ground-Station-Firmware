@@ -28,20 +28,16 @@
 /* SDR Modules */
 #include "led.h"
 #include "usb.h"
-#include "wireless.h"
-
+#include "commands.h"
+#include "lora.h"
 
 /*------------------------------------------------------------------------------
  Global Variables                                                                  
 ------------------------------------------------------------------------------*/
 
 /* MCU Peripheral handles */
-UART_HandleTypeDef huart4; /* Xbee UART */
 UART_HandleTypeDef huart1; /* USB UART  */
-
-/* Wireless Module Settings */
-WIRELESS_MOD_CODES wireless_mod = XBEE;
-
+SPI_HandleTypeDef  hspi2;  /* LORA SPI */
 
 /*------------------------------------------------------------------------------
  Application entry point                                                      
@@ -54,18 +50,20 @@ int main
 /*------------------------------------------------------------------------------
  Local Variables 
 ------------------------------------------------------------------------------*/
-uint8_t    tx_byte;     /* Byte to transmit with wireless module */
-USB_STATUS usb_status;  /* Status of USB module               */
-RF_STATUS  rf_status;   /* Status of wireless module          */
-
+uint8_t     subcommand_code;                   /* Subcommand opcode           */
+uint8_t    	usb_rx_byte;     				   /* Byte to transmit with usb module */
+USB_STATUS 	usb_status;  					   /* Status of USB module               */
+uint8_t		firmware_code;					   /* Board configuration */
 
 /*------------------------------------------------------------------------------
  Initializations 
 ------------------------------------------------------------------------------*/
-tx_byte    = 0;
+usb_rx_byte    = 0;
 usb_status = USB_OK;
-rf_status  = RF_OK;
 
+
+/* General Board configuration */
+firmware_code                 = FIRMWARE_FGD_TRANSMITTER;                   
 
 /*------------------------------------------------------------------------------
  MCU Initialization                                                                  
@@ -73,12 +71,49 @@ rf_status  = RF_OK;
 HAL_Init          ();   /* CMSIS HAL */
 SystemClock_Config();   /* SysClock  */
 GPIO_Init         ();   /* GPIO Pins */
-XBee_UART_Init    ();   /* XBee      */
 USB_UART_Init     ();   /* USB       */
+LORA_SPI_Init	  ();	/* LORA		 */
 
 /* Indicate Successful Initialization */
 led_set_color( LED_GREEN );
 
+
+/* Testing Purposes */
+lora_reset();
+
+LORA_CONFIG lora_config = {
+	LORA_SLEEP_MODE,
+	LORA_SPREAD_6,
+	LORA_BANDWIDTH_7_8_KHZ,
+	LORA_ECR_4_5,
+	LORA_IMPLICIT_HEADER,
+	915
+};
+
+uint8_t device_id = 0;
+
+LORA_STATUS lora_status = LORA_OK;
+
+lora_status = lora_init(&lora_config);
+
+// /* Testing Purpose */
+// uint8_t operation_mode_register;
+// LORA_STATUS read_status1 = lora_read_register( LORA_REG_OPERATION_MODE, &operation_mode_register );
+
+// uint8_t modem_config1_register;
+// LORA_STATUS read_status2 = lora_read_register( LORA_REG_NUM_RX_BYTES, &modem_config1_register );
+
+// uint8_t modem_config2_register;
+// LORA_STATUS read_status3 = lora_read_register( LORA_REG_RX_HEADER_INFO, &modem_config2_register );
+
+// uint8_t freq_reg;
+// LORA_STATUS read_status4 = lora_read_register( LORA_REG_FREQ_MSB, &freq_reg );
+// LORA_STATUS read_status5 = lora_read_register( LORA_REG_FREQ_MSD, &freq_reg );
+// LORA_STATUS read_status6 = lora_read_register( LORA_REG_FREQ_LSB, &freq_reg );
+
+uint8_t sample[] = {1,2,3,4,5,6,7,8,9,10};
+
+lora_status = lora_transmit(sample, 10);
 
 /*------------------------------------------------------------------------------
 Event Loop                                                                  
@@ -86,47 +121,43 @@ Event Loop
 while (1)
 	{
 	/* Receive byte from USB port */
-	usb_status = usb_receive( &tx_byte         , 
+	usb_status = usb_receive( &usb_rx_byte         , 
                               sizeof( uint8_t ), 
-                              HAL_DEFAULT_TIMEOUT );
+                              200 );
 
-	/* Transmit byte with wireless module */
-	if ( usb_status != USB_TIMEOUT )
-		{
-		switch ( wireless_mod )
+	if ( usb_status == USB_OK )
+	{
+		switch ( usb_rx_byte )
 			{
-			case XBEE:
+			/*-------------------------------------------------------------
+				CONNECT_OP	
+			-------------------------------------------------------------*/
+			case CONNECT_OP:
 				{
-				rf_status = rf_xbee_transmit_byte( tx_byte );
-				if ( rf_status != RF_OK )
-					{
-					Error_Handler( ERROR_RF_ERROR );
-					}
+				led_set_color(LED_YELLOW);
+				/* Send board identifying code    */
+				ping();
+
+				/* Send firmware identifying code */
+				usb_transmit( &firmware_code   , 
+							sizeof( uint8_t ), 
+							HAL_DEFAULT_TIMEOUT );
 				break;
-				}
-			case LORA:
-				{
-				// TODO: Implement lora transmit byte function
-				// TODO: Get rid of Error_Handler()
-				Error_Handler( ERROR_UNSUPPORTED_OP_ERROR );
-				break;
-				}
+				} /* CONNECT_OP */
+			/*-------------------------------------------------------------
+				Unrecognized command code  
+			-------------------------------------------------------------*/
 			default:
 				{
-				/* Unrecognized wireless module, invoke error handler */
-				Error_Handler( ERROR_UNSUPPORTED_OP_ERROR );
+				//Error_Handler();
 				break;
 				}
-			}
-		}
-	else
-		{
-		/* USB timeout, do noting until next byte arrives */
-		}
-	}
 
-} /* main */
+			} /* switch( usb_rx_data ) */
+		} /* if ( usb_status != USB_OK ) */
 
+	} /* main */
+}
 
 /*******************************************************************************
 * END OF FILE                                                                  *
