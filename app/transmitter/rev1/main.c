@@ -51,7 +51,7 @@ int main
  Local Variables 
 ------------------------------------------------------------------------------*/
 uint8_t     subcommand_code;                   /* Subcommand opcode           */
-uint8_t    	usb_rx_byte;     				   /* Byte to transmit with wireless module */
+uint8_t    	usb_rx_byte;     				   /* Byte to transmit with usb module */
 USB_STATUS 	usb_status;  					   /* Status of USB module               */
 uint8_t		firmware_code;					   /* Board configuration */
 
@@ -94,24 +94,26 @@ uint8_t device_id = 0;
 
 LORA_STATUS lora_status = LORA_OK;
 
-lora_status = lora_get_device_id(&device_id);
-
 lora_status = lora_init(&lora_config);
 
-/* Testing Purpose */
-uint8_t operation_mode_register;
-LORA_STATUS read_status1 = lora_read_register( LORA_REG_OPERATION_MODE, &operation_mode_register );
+// /* Testing Purpose */
+// uint8_t operation_mode_register;
+// LORA_STATUS read_status1 = lora_read_register( LORA_REG_OPERATION_MODE, &operation_mode_register );
 
-uint8_t modem_config1_register;
-LORA_STATUS read_status2 = lora_read_register( LORA_REG_NUM_RX_BYTES, &modem_config1_register );
+// uint8_t modem_config1_register;
+// LORA_STATUS read_status2 = lora_read_register( LORA_REG_NUM_RX_BYTES, &modem_config1_register );
 
-uint8_t modem_config2_register;
-LORA_STATUS read_status3 = lora_read_register( LORA_REG_RX_HEADER_INFO, &modem_config2_register );
+// uint8_t modem_config2_register;
+// LORA_STATUS read_status3 = lora_read_register( LORA_REG_RX_HEADER_INFO, &modem_config2_register );
 
-uint8_t freq_reg;
-LORA_STATUS read_status4 = lora_read_register( LORA_REG_FREQ_MSB, &freq_reg );
-LORA_STATUS read_status5 = lora_read_register( LORA_REG_FREQ_MSD, &freq_reg );
-LORA_STATUS read_status6 = lora_read_register( LORA_REG_FREQ_LSB, &freq_reg );
+// uint8_t freq_reg;
+// LORA_STATUS read_status4 = lora_read_register( LORA_REG_FREQ_MSB, &freq_reg );
+// LORA_STATUS read_status5 = lora_read_register( LORA_REG_FREQ_MSD, &freq_reg );
+// LORA_STATUS read_status6 = lora_read_register( LORA_REG_FREQ_LSB, &freq_reg );
+
+uint8_t sample[] = {1,2,3,4,5,6,7,8,9,10};
+
+lora_status = lora_transmit(sample, 10);
 
 /*------------------------------------------------------------------------------
 Event Loop                                                                  
