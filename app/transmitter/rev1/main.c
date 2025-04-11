@@ -83,37 +83,39 @@ lora_reset();
 
 LORA_CONFIG lora_config = {
 	LORA_SLEEP_MODE,
-	LORA_SPREAD_6,
-	LORA_BANDWIDTH_7_8_KHZ,
+	LORA_SPREAD_12,
+	LORA_BANDWIDTH_125_KHZ,
 	LORA_ECR_4_5,
-	LORA_IMPLICIT_HEADER,
-	915
+	LORA_EXPLICIT_HEADER,
+	916
 };
 
 uint8_t device_id = 0;
+lora_get_device_id( &device_id );
 
 LORA_STATUS lora_status = LORA_OK;
 
 lora_status = lora_init(&lora_config);
 
 // /* Testing Purpose */
-// uint8_t operation_mode_register;
-// LORA_STATUS read_status1 = lora_read_register( LORA_REG_OPERATION_MODE, &operation_mode_register );
+uint8_t operation_mode_register;
+LORA_STATUS read_status1 = lora_read_register( LORA_REG_OPERATION_MODE, &operation_mode_register );
 
-// uint8_t modem_config1_register;
-// LORA_STATUS read_status2 = lora_read_register( LORA_REG_NUM_RX_BYTES, &modem_config1_register );
+uint8_t modem_config1_register;
+LORA_STATUS read_status2 = lora_read_register( LORA_REG_NUM_RX_BYTES, &modem_config1_register );
 
-// uint8_t modem_config2_register;
-// LORA_STATUS read_status3 = lora_read_register( LORA_REG_RX_HEADER_INFO, &modem_config2_register );
+uint8_t modem_config2_register;
+LORA_STATUS read_status3 = lora_read_register( LORA_REG_RX_HEADER_INFO, &modem_config2_register );
 
-// uint8_t freq_reg;
-// LORA_STATUS read_status4 = lora_read_register( LORA_REG_FREQ_MSB, &freq_reg );
-// LORA_STATUS read_status5 = lora_read_register( LORA_REG_FREQ_MSD, &freq_reg );
-// LORA_STATUS read_status6 = lora_read_register( LORA_REG_FREQ_LSB, &freq_reg );
+uint8_t freq_reg;
+LORA_STATUS read_status4 = lora_read_register( LORA_REG_FREQ_MSB, &freq_reg );
+LORA_STATUS read_status5 = lora_read_register( LORA_REG_FREQ_MSD, &freq_reg );
+LORA_STATUS read_status6 = lora_read_register( LORA_REG_FREQ_LSB, &freq_reg );
+
+// Get around garbage collection for now
+uint8_t bob = operation_mode_register + modem_config1_register + modem_config2_register + freq_reg;
 
 uint8_t sample[] = {1,2,3,4,5,6,7,8,9,10};
-
-lora_status = lora_transmit(sample, 10);
 
 /*------------------------------------------------------------------------------
 Event Loop                                                                  
@@ -155,7 +157,10 @@ while (1)
 
 			} /* switch( usb_rx_data ) */
 		} /* if ( usb_status != USB_OK ) */
-
+		lora_status = lora_transmit(sample, 10);
+		if( lora_status == LORA_FAIL ) {
+			led_set_color( LED_RED );
+		}
 	} /* main */
 }
 
