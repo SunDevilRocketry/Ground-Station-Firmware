@@ -69,6 +69,8 @@ $(LIB_DIR)Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_i2c_ex.c   \
 $(LIB_DIR)Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_exti.c     \
 $(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart.c    \
 $(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart_ex.c \
+$(MOD_DIR)/common/common.c                                           \
+$(MOD_DIR)/common/common_error.c                                     \
 $(MOD_DIR)/led/led.c                                                \
 $(MOD_DIR)/usb/usb.c                                                \
 $(MOD_DIR)/wireless/wireless.c
@@ -138,6 +140,7 @@ C_INCLUDES =                                           \
 -I$(INIT_DIR)/config/Inc                               \
 -I$(LIB_DIR)                                           \
 -I$(MOD_DIR)/commands                                  \
+-I$(MOD_DIR)/common                                    \
 -I$(MOD_DIR)/led                                       \
 -I$(MOD_DIR)/wireless                                  \
 -I$(MOD_DIR)/usb                                       \

@@ -77,7 +77,9 @@ $(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_spi_ex.c    \
 $(MOD_DIR)/led/led.c                                                \
 $(MOD_DIR)/usb/usb.c                                                \
 $(MOD_DIR)/lora/lora.c												\
-$(MOD_DIR)/commands/commands.c												
+$(MOD_DIR)/common/common.c                                           \
+$(MOD_DIR)/common/common_error.c                                     \
+$(MOD_DIR)/commands/commands.c		
 
 
 # ASM sources
@@ -148,6 +150,7 @@ C_INCLUDES =                                           \
 -I$(MOD_DIR)/lora	                                   \
 -I$(MOD_DIR)/usb                                       \
 -I$(MOD_DIR)/commands                                  \
+-I$(MOD_DIR)/common                                    \
 -I$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Inc          \
 -I$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Inc/Legacy   \
 -I$(LIB_DIR)/Drivers/CMSIS/Device/ST/STM32H7xx/Include \

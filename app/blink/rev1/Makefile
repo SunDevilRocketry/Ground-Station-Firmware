@@ -53,6 +53,8 @@ $(INIT_DIR)/config/Src/stm32h7xx_it.c                                \
 $(INIT_DIR)/config/Src/stm32h7xx_hal_msp.c                           \
 $(INIT_DIR)/config/Src/system_stm32h7xx.c                            \
 $(MOD_DIR)/led/led.c                                                 \
+$(MOD_DIR)/common/common.c                                           \
+$(MOD_DIR)/common/common_error.c                                     \
 $(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_cortex.c   \
 $(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_tim.c      \
 $(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_tim_ex.c   \
@@ -135,6 +137,7 @@ C_INCLUDES =                                           \
 -I$(INIT_DIR)/config/Inc                               \
 -I$(LIB_DIR)                                           \
 -I$(MOD_DIR)/led                                       \
+-I$(MOD_DIR)/common                                    \
 -I$(UTIL_DIR)                                          \
 -I$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Inc          \
 -I$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Inc/Legacy   \
