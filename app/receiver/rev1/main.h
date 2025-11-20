@@ -28,6 +28,7 @@ extern "C" {
 
 /* project includes */
 #include "usb.h"
+#include "lora.h"
 
 /*------------------------------------------------------------------------------
  Macros

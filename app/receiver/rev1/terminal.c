@@ -27,7 +27,12 @@
 #include "common.h"
 #include "usb.h"
 #include "commands.h"
-// #include "lora.h"
+#include "lora.h"
+
+/*------------------------------------------------------------------------------
+ Globals                                                                    
+------------------------------------------------------------------------------*/
+extern LORA_PRESET lora_preset;
 
 /*------------------------------------------------------------------------------
  Procedures                                                 
@@ -59,47 +64,81 @@ led_set_color( LED_GREEN );
 ------------------------------------------------------------------------------*/
 /* Receive byte from USB port */
 usb_status = usb_receive( &command_code         , 
-                            sizeof( uint8_t ), 
-                            RECIEVER_TERMINAL_TIMEOUT );
+							sizeof( uint8_t ), 
+							RECIEVER_TERMINAL_TIMEOUT );
 
 if ( usb_status == USB_OK )
 	{
-		switch ( command_code )
+	switch ( command_code )
+		{
+		/*-------------------------------------------------------------
+			CONNECT_OP	
+		-------------------------------------------------------------*/
+		case CONNECT_OP:
 			{
-			/*-------------------------------------------------------------
-				CONNECT_OP	
-			-------------------------------------------------------------*/
-			case CONNECT_OP:
-				{
-				/* Send board identifying code    */
-				ping();
+			/* Send board identifying code    */
+			ping();
 
-				/* Send firmware identifying code */
-				usb_transmit( &firmware_code   , 
-							sizeof( uint8_t ), 
-							HAL_DEFAULT_TIMEOUT );
-				break;
-				} /* CONNECT_OP */
-			/*-------------------------------------------------------------
-				DASHBOARD_OP	
-			-------------------------------------------------------------*/
-			case DASHBOARD_OP:
+			/* Send firmware identifying code */
+			usb_transmit( &firmware_code   , 
+						sizeof( uint8_t ), 
+						HAL_DEFAULT_TIMEOUT );
+			break;
+			} /* CONNECT_OP */
+		/*-------------------------------------------------------------
+			DASHBOARD_OP	
+		-------------------------------------------------------------*/
+		case DASHBOARD_OP:
+			{
+			/* Get dashboard data */
+			usb_status = telem_loop();
+			break;
+			} /* DASHBOARD_OP */
+		/*-------------------------------------------------------------
+			TELEM_OP	
+		-------------------------------------------------------------*/
+		case TELEM_OP:
+			{
+			uint8_t subcommand_code;
+			/* Recieve telem subcommand over USB */
+			usb_status = usb_receive( &subcommand_code       ,
+									sizeof( subcommand_code ),
+									HAL_DEFAULT_TIMEOUT );
+			
+			/* Execute subcommand */
+			if ( usb_status == USB_OK && subcommand_code == TELEM_UPLOAD_OP )
 				{
-				/* Get dashboard data */
-				usb_status = telem_loop();
-				break;
-				} /* DASHBOARD_OP */
-			/*-------------------------------------------------------------
-				Unrecognized command code  
-			-------------------------------------------------------------*/
-			default:
-				{
-				error_fail_fast(ERROR_INVALID_STATE_ERROR);
-				break;
+				LORA_PRESET preset_tmp_buf;
+				memset( &preset_tmp_buf, 0, sizeof(preset_tmp_buf) );
+				usb_status = usb_receive( &preset_tmp_buf, sizeof( LORA_PRESET ), HAL_DEFAULT_TIMEOUT );
+				memcpy( &lora_preset, &preset_tmp_buf, sizeof( LORA_PRESET ) );
+
+				if( usb_status != USB_OK )
+					{
+					return usb_status;
+					}
+
+				// ETS or DS TODO: Validate LORA_PRESET
+				// ETS or DS TODO: LoRa INIT
+
 				}
+			else /* unknown subcommand or usb fail */
+				{
+				error_fail_fast( ERROR_TLM_CMD_ERROR );
+				}
+			break;
+			}
+		/*-------------------------------------------------------------
+			Unrecognized command code  
+		-------------------------------------------------------------*/
+		default:
+			{
+			error_fail_fast(ERROR_INVALID_STATE_ERROR);
+			break;
+			}
 
-			} /* switch( usb_rx_data ) */
-		} /* if ( usb_status == USB_OK ) */
+		} /* switch( usb_rx_data ) */
+	} /* if ( usb_status == USB_OK ) */
 
 return usb_status;
 

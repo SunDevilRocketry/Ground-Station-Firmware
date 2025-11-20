@@ -29,11 +29,14 @@
 #include "usb.h"
 #include "commands.h"
 #include "common.h"
-// #include "lora.h"
+#include "lora.h"
 
 /*------------------------------------------------------------------------------
  Global Variables                                                                  
 ------------------------------------------------------------------------------*/
+
+/* LoRa config settings */
+LORA_PRESET lora_preset;
 
 /* MCU Peripheral handles */
 UART_HandleTypeDef huart1; /* USB UART  */
@@ -58,7 +61,13 @@ uint8_t		firmware_code;					   /* Board configuration */
 ------------------------------------------------------------------------------*/
 
 /* General Board configuration */
-firmware_code                 = FIRMWARE_RECEIVER;                   
+firmware_code                 = FIRMWARE_RECEIVER;
+
+/* LORA configs */
+memset( &lora_preset, 0, sizeof(lora_preset) );
+lora_preset.lora_bandwidth = 0x07;
+lora_preset.lora_spreading_factor = 0x12;
+lora_preset.lora_frequency = 915000;
 
 /*------------------------------------------------------------------------------
  MCU Initialization                                                                  
