@@ -20,7 +20,7 @@
 #include "sdr_pin_defines_A0005.h"
 #include "main.h"
 #include "init.h"
-#include "sdr_error.h"
+#include "error_sdr.h"
 
 
 /*------------------------------------------------------------------------------

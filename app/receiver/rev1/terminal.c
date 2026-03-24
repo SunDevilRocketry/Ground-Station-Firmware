@@ -27,12 +27,24 @@
 #include "common.h"
 #include "usb.h"
 #include "commands.h"
-#include "lora.h"
+#include "error_sdr.h"
+#include "onboard_flash.h"
+// #include "lora.h"
 
 /*------------------------------------------------------------------------------
  Globals                                                                    
 ------------------------------------------------------------------------------*/
-extern LORA_PRESET lora_preset;
+//extern LORA_PRESET lora_preset;
+extern uint32_t __user_config_start;
+
+#define USER_CONFIG_ADDR  ((uint32_t)&__user_config_start)
+
+// ETS TMP:
+typedef struct LORA_PRESET {
+    uint8_t tmp[96];
+} LORA_PRESET;
+
+LORA_PRESET lora_preset;
 
 /*------------------------------------------------------------------------------
  Procedures                                                 
@@ -95,9 +107,9 @@ if ( usb_status == USB_OK )
 			break;
 			} /* DASHBOARD_OP */
 		/*-------------------------------------------------------------
-			TELEM_OP	
+			PRESET_OP	
 		-------------------------------------------------------------*/
-		case TELEM_OP:
+		case PRESET_OP:
 			{
 			uint8_t subcommand_code;
 			/* Recieve telem subcommand over USB */
@@ -106,12 +118,13 @@ if ( usb_status == USB_OK )
 									HAL_DEFAULT_TIMEOUT );
 			
 			/* Execute subcommand */
-			if ( usb_status == USB_OK && subcommand_code == TELEM_UPLOAD_OP )
+			if ( usb_status == USB_OK && subcommand_code == 0x01 /* ETS TEMP */ )
 				{
 				LORA_PRESET preset_tmp_buf;
 				memset( &preset_tmp_buf, 0, sizeof(preset_tmp_buf) );
 				usb_status = usb_receive( &preset_tmp_buf, sizeof( LORA_PRESET ), HAL_DEFAULT_TIMEOUT );
 				memcpy( &lora_preset, &preset_tmp_buf, sizeof( LORA_PRESET ) );
+                onboard_flash_write_addr(USER_CONFIG_ADDR, (uint8_t*)&lora_preset, sizeof(lora_preset) );
 
 				if( usb_status != USB_OK )
 					{
@@ -124,7 +137,7 @@ if ( usb_status == USB_OK )
 				}
 			else /* unknown subcommand or usb fail */
 				{
-				error_fail_fast( ERROR_TLM_CMD_ERROR );
+				error_fail_fast( ERROR_CONFIG_VALIDITY_ERROR );
 				}
 			break;
 			}

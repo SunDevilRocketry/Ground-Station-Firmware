@@ -36,6 +36,8 @@ MOD_DIR = ../../../mod
 # MCU Initialization Path
 INIT_DIR = ../../../init
 
+DRIVER_DIR = ../../../driver
+
 # Utilties path
 UTIL_DIR = $(LIB_DIR)/util
 
@@ -49,7 +51,7 @@ C_SOURCES =                                                         \
 main.c                                                              \
 terminal.c                                                          \
 $(INIT_DIR)/init.c                                                  \
-$(UTIL_DIR)/sdr_error.c                                             \
+$(MOD_DIR)/error_sdr/error_sdr.c                                    \
 $(INIT_DIR)/config/Src/stm32h7xx_it.c                               \
 $(INIT_DIR)/config/Src/stm32h7xx_hal_msp.c                          \
 $(INIT_DIR)/config/Src/system_stm32h7xx.c                           \
@@ -75,10 +77,10 @@ $(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart.c    \
 $(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart_ex.c \
 $(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_spi.c       \
 $(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_spi_ex.c    \
-$(MOD_DIR)/led/led.c                                                \
-$(MOD_DIR)/usb/usb.c                                                \
+$(DRIVER_DIR)/led/led.c                                                \
+$(DRIVER_DIR)/usb/usb.c                                                \
+$(DRIVER_DIR)/onboard_flash/onboard_flash.c                          \
 $(MOD_DIR)/common/common.c                                           \
-$(MOD_DIR)/common/common_error.c                                     \
 $(MOD_DIR)/commands/commands.c
 
 
@@ -146,12 +148,13 @@ C_INCLUDES =                                           \
 -I$(UTIL_DIR)                                          \
 -I$(INIT_DIR)/config/Inc                               \
 -I$(LIB_DIR)                                           \
--I$(MOD_DIR)/imu									   \
--I$(MOD_DIR)/led                                       \
--I$(MOD_DIR)/lora	                                   \
--I$(MOD_DIR)/usb                                       \
+-I$(DRIVER_DIR)/imu									   \
+-I$(DRIVER_DIR)/led                                    \
+-I$(DRIVER_DIR)/usb                                    \
+-I$(DRIVER_DIR)/onboard_flash						   \
 -I$(MOD_DIR)/commands                                  \
 -I$(MOD_DIR)/common                                    \
+-I$(MOD_DIR)/error_sdr                                 \
 -I$(MOD_DIR)/sensor                                    \
 -I$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Inc          \
 -I$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Inc/Legacy   \

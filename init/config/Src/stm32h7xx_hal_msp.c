@@ -14,7 +14,7 @@
 Standard Includes                                                                     
 ------------------------------------------------------------------------------*/
 #include "main.h"
-#include "sdr_error.h"
+#include "error_sdr.h"
 
 
 void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi)
