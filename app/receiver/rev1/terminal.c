@@ -124,7 +124,7 @@ if ( usb_status == USB_OK )
 				memset( &preset_tmp_buf, 0, sizeof(preset_tmp_buf) );
 				usb_status = usb_receive( &preset_tmp_buf, sizeof( LORA_PRESET ), HAL_DEFAULT_TIMEOUT );
 				memcpy( &lora_preset, &preset_tmp_buf, sizeof( LORA_PRESET ) );
-                onboard_flash_write_addr(USER_CONFIG_ADDR, (uint8_t*)&lora_preset, sizeof(lora_preset) );
+                //onboard_flash_write_addr(USER_CONFIG_ADDR, (uint8_t*)&lora_preset, sizeof(lora_preset) );
 
 				if( usb_status != USB_OK )
 					{
