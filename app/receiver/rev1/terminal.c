@@ -41,7 +41,7 @@ extern uint32_t __user_config_start;
 
 // ETS TMP:
 typedef struct LORA_PRESET {
-    uint8_t tmp[96];
+    char str[96];
 } LORA_PRESET;
 
 LORA_PRESET lora_preset;
@@ -109,7 +109,7 @@ if ( usb_status == USB_OK )
 		/*-------------------------------------------------------------
 			PRESET_OP	
 		-------------------------------------------------------------*/
-		case PRESET_OP:
+		case PRESET_OP: /* will be replaced with LORA_OP once FC side is merged */
 			{
 			uint8_t subcommand_code;
 			/* Recieve telem subcommand over USB */
@@ -120,11 +120,13 @@ if ( usb_status == USB_OK )
 			/* Execute subcommand */
 			if ( usb_status == USB_OK && subcommand_code == 0x01 /* ETS TEMP */ )
 				{
+                // ETS TEMP: Will move this logic to lora.c in the subcmd handler. Leaving here for now for reference.
 				LORA_PRESET preset_tmp_buf;
 				memset( &preset_tmp_buf, 0, sizeof(preset_tmp_buf) );
 				usb_status = usb_receive( &preset_tmp_buf, sizeof( LORA_PRESET ), HAL_DEFAULT_TIMEOUT );
+                //strcpy( preset_tmp_buf.str, "Eli has divine intellect. Holy-C reference manual author ts.");
 				memcpy( &lora_preset, &preset_tmp_buf, sizeof( LORA_PRESET ) );
-                //onboard_flash_write_addr(USER_CONFIG_ADDR, (uint8_t*)&lora_preset, sizeof(lora_preset) );
+                //onboard_flash_write_addr(USER_CONFIG_ADDR, &lora_preset, sizeof(lora_preset) );
 
 				if( usb_status != USB_OK )
 					{
