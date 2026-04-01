@@ -28,7 +28,7 @@
 #include "led.h"
 #include "usb.h"
 #include "commands.h"
-#include "common.h"
+#include "math_sdr.h"
 //#include "lora.h"
 
 /*------------------------------------------------------------------------------

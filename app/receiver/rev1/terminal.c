@@ -24,7 +24,7 @@
 
 /* SDR Modules */
 #include "led.h"
-#include "common.h"
+#include "math_sdr.h"
 #include "usb.h"
 #include "commands.h"
 #include "error_sdr.h"
