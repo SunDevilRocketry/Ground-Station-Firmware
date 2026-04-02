@@ -16,7 +16,7 @@
 **
 **  Target      : STMicroelectronics STM32
 **
-**  Distribution: The file is distributed “as is,” without any warranty
+**  Distribution: The file is distributed "as is," without any warranty
 **                of any kind.
 **
 *****************************************************************************
@@ -57,6 +57,8 @@ _estack = 0x20020000;    /* end of RAM */
 /* Generate a link error if heap and stack don't fit into RAM */
 _Min_Heap_Size = 0x200;      /* required amount of heap  */
 _Min_Stack_Size = 0x400; /* required amount of stack */
+
+_User_Config_Size = 0x100;
 
 /* Specify the memory areas */
 MEMORY
@@ -149,7 +151,42 @@ SECTIONS
     _edata = .;        /* define a global symbol at data end */
   } >DTCMRAM AT> FLASH
 
-  
+  /* Functions that must execute from RAM during flash erase/program.
+   * LMA is in FLASH (copied to DTCMRAM by startup), VMA is in DTCMRAM.
+   * _siRamFunc is used by startup to locate the load image in flash. */
+  _siRamFunc = LOADADDR(.RamFunc);
+  .RamFunc :
+  {
+    . = ALIGN(4);
+    __ram_func_start = .;
+    *(.RamFunc)
+    *(.RamFunc*)
+    . = ALIGN(4);
+    __ram_func_end = .;
+  } >DTCMRAM AT> FLASH
+
+  /* Buffer for rest of flash */
+  .reserved :
+  {
+    . = ALIGN(4);
+    __reserved_start = .;
+    . = ORIGIN(FLASH) + LENGTH(FLASH) - _User_Config_Size;
+    __reserved_end = .;
+  } >FLASH
+
+  /* Configs sit at end to reduce likelihood of overwrite during FW updates */
+  .user_config :
+  {
+    . = ALIGN(4);
+    __user_config_start = .;
+    . = ORIGIN(FLASH) + LENGTH(FLASH);
+    __user_config_end = .;
+  } >FLASH
+
+  /* Catch the case where code + data + RamFunc LMA has grown into .user_config */
+  ASSERT(LOADADDR(.RamFunc) + SIZEOF(.RamFunc) <= __user_config_start,
+         "ERROR: Code + .data + .RamFunc LMA overflows into .user_config region!")
+
   /* Uninitialized data section */
   . = ALIGN(4);
   .bss :
@@ -177,7 +214,16 @@ SECTIONS
     . = ALIGN(8);
   } >DTCMRAM
 
-  
+  /* Flash shadow buffer for erase/reprogram cycle. NOLOAD because it is
+   * never initialized from flash — contents are filled at runtime by
+   * onboard_flash_write_addr before the erase window opens. */
+  .ram_d1 (NOLOAD) :
+  {
+    . = ALIGN(32);
+    *(.ram_d1)
+    *(.ram_d1*)
+    . = ALIGN(32);
+  } >RAM_D1
 
   /* Remove information from the standard libraries */
   /DISCARD/ :
@@ -189,5 +235,3 @@ SECTIONS
 
   .ARM.attributes 0 : { *(.ARM.attributes) }
 }
-
-
