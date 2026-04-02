@@ -29,14 +29,14 @@
 #include "usb.h"
 #include "commands.h"
 #include "math_sdr.h"
-//#include "lora.h"
+#include "lora.h"
 
 /*------------------------------------------------------------------------------
  Global Variables                                                                  
 ------------------------------------------------------------------------------*/
 
 /* LoRa config settings */
-//LORA_PRESET lora_preset;
+LORA_PRESET lora_preset;
 
 /* MCU Peripheral handles */
 UART_HandleTypeDef huart1; /* USB UART  */
@@ -53,7 +53,7 @@ int main
 /*------------------------------------------------------------------------------
  Local Variables 
 ------------------------------------------------------------------------------*/
-USB_STATUS 	usb_status;  					   /* Status of USB module               */
+USB_STATUS 	usb_status;  					   /* Status of USB module */
 uint8_t		firmware_code;					   /* Board configuration */
 
 /*------------------------------------------------------------------------------
@@ -76,6 +76,31 @@ HAL_Init          ();   /* CMSIS HAL */
 SystemClock_Config();   /* SysClock  */
 GPIO_Init         ();   /* GPIO Pins */
 USB_UART_Init     ();   /* USB       */
+LORA_SPI_Init     ();   /* LoRa      */
+
+/* Get LoRa configs from nonvol. This is technically memory unsafe, but we know
+   from the linker script that we have 256 bytes in this region, so its fine. */
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wstringop-overread"
+memcpy(&lora_preset, USER_CONFIG_ADDR, sizeof(LORA_PRESET));
+LORA_STATUS lora_init_status = lora_configure(&lora_preset);
+#pragma GCC diagnostic pop
+
+if( lora_init_status == LORA_USING_DEFAULTS )
+    {
+    /* give an indicator of default configs*/
+    for( int i = 0; i < 4; i++ )
+        {
+        led_set_color( LED_CYAN );
+        HAL_Delay(200);
+        led_set_color( LED_YELLOW );
+        HAL_Delay(200);
+        }
+    }
+else if( lora_init_status != LORA_OK )
+    {
+    error_fail_fast( ERROR_LORA_INIT_ERROR );
+    }
 
 /* Indicate Successful Initialization */
 led_set_color( LED_GREEN );
@@ -89,8 +114,9 @@ while (1)
 	usb_status = terminal_loop( firmware_code );
 	assert_fail_fast( (usb_status != USB_FAIL), ERROR_USB_UART_ERROR );
 
-	} /* main */
-}
+	}
+} /* main */
+
 
 /*******************************************************************************
 * END OF FILE                                                                  *

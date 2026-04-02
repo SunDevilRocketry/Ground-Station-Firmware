@@ -38,6 +38,10 @@ extern "C" {
 #define HAL_DEFAULT_TIMEOUT		( 10 )
 #define RECIEVER_TERMINAL_TIMEOUT    ( 100 )
 
+/* LoRa presets */
+extern uint32_t __user_config_start;
+#define USER_CONFIG_ADDR  ((LORA_PRESET*)&__user_config_start)
+
 /*------------------------------------------------------------------------------
  Function Prototypes
 ------------------------------------------------------------------------------*/

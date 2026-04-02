@@ -29,22 +29,12 @@
 #include "commands.h"
 #include "error_sdr.h"
 #include "onboard_flash.h"
-// #include "lora.h"
+#include "lora.h"
 
 /*------------------------------------------------------------------------------
  Globals                                                                    
 ------------------------------------------------------------------------------*/
-//extern LORA_PRESET lora_preset;
-extern uint32_t __user_config_start;
-
-#define USER_CONFIG_ADDR  ((uint32_t)&__user_config_start)
-
-// ETS TMP:
-typedef struct LORA_PRESET {
-    char str[96];
-} LORA_PRESET;
-
-LORA_PRESET lora_preset;
+extern LORA_PRESET lora_preset;
 
 /*------------------------------------------------------------------------------
  Procedures                                                 
@@ -107,40 +97,39 @@ if ( usb_status == USB_OK )
 			break;
 			} /* DASHBOARD_OP */
 		/*-------------------------------------------------------------
-			PRESET_OP	
+			LORA_OP	
 		-------------------------------------------------------------*/
-		case PRESET_OP: /* will be replaced with LORA_OP once FC side is merged */
+		case LORA_OP:
 			{
 			uint8_t subcommand_code;
+            LORA_STATUS command_status;
 			/* Recieve telem subcommand over USB */
 			usb_status = usb_receive( &subcommand_code       ,
 									sizeof( subcommand_code ),
 									HAL_DEFAULT_TIMEOUT );
 			
-			/* Execute subcommand */
-			if ( usb_status == USB_OK && subcommand_code == 0x01 /* ETS TEMP */ )
+			/* Execute subcommand to mutate or transmit buffer */
+            command_status = lora_cmd_execute(subcommand_code, &lora_preset);
+
+			if ( command_status == LORA_OK && subcommand_code == LORA_PRESET_UPLOAD )
 				{
-                // ETS TEMP: Will move this logic to lora.c in the subcmd handler. Leaving here for now for reference.
-				LORA_PRESET preset_tmp_buf;
-				memset( &preset_tmp_buf, 0, sizeof(preset_tmp_buf) );
-				usb_status = usb_receive( &preset_tmp_buf, sizeof( LORA_PRESET ), HAL_DEFAULT_TIMEOUT );
-                //strcpy( preset_tmp_buf.str, "Eli has divine intellect. Holy-C reference manual author ts.");
-				memcpy( &lora_preset, &preset_tmp_buf, sizeof( LORA_PRESET ) );
-                //onboard_flash_write_addr(USER_CONFIG_ADDR, &lora_preset, sizeof(lora_preset) );
-
-				if( usb_status != USB_OK )
-					{
-					return usb_status;
-					}
-
-				// ETS or DS TODO: Validate LORA_PRESET
-				// ETS or DS TODO: LoRa INIT
-
+                if(onboard_flash_write_addr( (uint32_t)USER_CONFIG_ADDR, &lora_preset, sizeof(lora_preset) ) != HAL_OK)
+                    {
+                    /* panic, this is worst-case scenario. */
+                    error_fail_fast(ERROR_FLASH_CMD_ERROR);
+                    }
+                
+                /* Finally, re-configure the modem */
+                if(lora_configure(&lora_preset) != LORA_OK) /* also errors out if configs are invalid! */
+                    {
+                    error_fail_fast( ERROR_LORA_CMD_ERROR );
+                    }
 				}
-			else /* unknown subcommand or usb fail */
-				{
-				error_fail_fast( ERROR_CONFIG_VALIDITY_ERROR );
-				}
+            else if ( command_status != LORA_OK || subcommand_code != LORA_PRESET_DOWNLOAD )
+                {
+                /* unknown subcommand or usb fail */
+                error_fail_fast( ERROR_CONFIG_VALIDITY_ERROR );
+                }
 			break;
 			}
 		/*-------------------------------------------------------------
