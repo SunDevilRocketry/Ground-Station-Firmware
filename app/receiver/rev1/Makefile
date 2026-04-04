@@ -78,6 +78,7 @@ $(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart_ex.c \
 $(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_spi.c       \
 $(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_spi_ex.c    \
 $(DRIVER_DIR)/led/led.c                                                \
+$(DRIVER_DIR)/lora/lora.c                                              \
 $(DRIVER_DIR)/usb/usb.c                                                \
 $(DRIVER_DIR)/onboard_flash/onboard_flash.c                          \
 $(MOD_DIR)/math_sdr/math_sdr.c                                           \
@@ -150,6 +151,7 @@ C_INCLUDES =                                           \
 -I$(LIB_DIR)                                           \
 -I$(DRIVER_DIR)/imu									   \
 -I$(DRIVER_DIR)/led                                    \
+-I$(DRIVER_DIR)/lora                                   \
 -I$(DRIVER_DIR)/usb                                    \
 -I$(DRIVER_DIR)/onboard_flash						   \
 -I$(MOD_DIR)/commands                                  \
