@@ -157,6 +157,7 @@ C_INCLUDES =                                           \
 -I$(MOD_DIR)/commands                                  \
 -I$(MOD_DIR)/math_sdr                                  \
 -I$(MOD_DIR)/error_sdr                                 \
+-I$(MOD_DIR)/telemetry                                 \
 -I$(MOD_DIR)/sensor                                    \
 -I$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Inc          \
 -I$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Inc/Legacy   \

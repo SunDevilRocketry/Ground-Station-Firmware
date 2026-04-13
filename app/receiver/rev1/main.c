@@ -29,11 +29,21 @@
 #include "usb.h"
 #include "commands.h"
 #include "math_sdr.h"
+#include "telemetry.h"
 #include "lora.h"
 
 /*------------------------------------------------------------------------------
  Global Variables                                                                  
 ------------------------------------------------------------------------------*/
+
+/* USB data buffer */
+uint8_t usb_tx_byte[ USB_BUF_SIZE ];
+uint8_t usb_rx_byte[ USB_BUF_SIZE ];
+
+/* LoRa global receive buffer */
+LORA_STATUS lora_status;
+LORA_MESSAGE last_lora_message;
+bool start_lora = false;
 
 /* LoRa config settings */
 LORA_PRESET lora_preset;
@@ -53,15 +63,10 @@ int main
 /*------------------------------------------------------------------------------
  Local Variables 
 ------------------------------------------------------------------------------*/
-USB_STATUS 	usb_status;  					   /* Status of USB module */
-uint8_t		firmware_code;					   /* Board configuration */
 
 /*------------------------------------------------------------------------------
  Initializations 
 ------------------------------------------------------------------------------*/
-
-/* General Board configuration */
-firmware_code                 = FIRMWARE_RECEIVER;
 
 /* LORA configs */
 // memset( &lora_preset, 0, sizeof(lora_preset) );
@@ -102,17 +107,35 @@ else if( lora_init_status != LORA_OK )
     error_fail_fast( ERROR_LORA_INIT_ERROR );
     }
 
+/* Initialize LoRa buffer */
+memset(&last_lora_message, 0, LORA_MESSAGE_SIZE);
+
 /* Indicate Successful Initialization */
 led_set_color( LED_GREEN );
 
+/* start terminal loop */
+usb_receive_IT( usb_rx_byte, 1 );
+
+/* Terminal Mode */
+led_set_color( LED_GREEN );
 
 /*------------------------------------------------------------------------------
 Event Loop                                                                  
 ------------------------------------------------------------------------------*/
 while (1)
 	{
-	usb_status = terminal_loop( firmware_code );
-	assert_fail_fast( (usb_status != USB_FAIL), ERROR_USB_UART_ERROR );
+    if( start_lora && lora_receive_ready() == LORA_READY )
+        {
+        led_set_color( LED_CYAN );
+        uint8_t rx_buf[LORA_MESSAGE_SIZE];
+        uint8_t rx_size = 0;
+	    lora_status = lora_receive(rx_buf, LORA_MESSAGE_SIZE, &rx_size);
+
+        if( lora_status == LORA_OK && rx_size == LORA_MESSAGE_SIZE )
+            {
+            memcpy( &last_lora_message, rx_buf, LORA_MESSAGE_SIZE );
+            }
+        }
 
 	}
 } /* main */

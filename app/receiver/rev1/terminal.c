@@ -30,11 +30,16 @@
 #include "error_sdr.h"
 #include "onboard_flash.h"
 #include "lora.h"
+#include "telemetry.h"
 
 /*------------------------------------------------------------------------------
  Globals                                                                    
 ------------------------------------------------------------------------------*/
 extern LORA_PRESET lora_preset;
+extern uint8_t usb_tx_byte[ USB_BUF_SIZE ];
+extern uint8_t usb_rx_byte[ USB_BUF_SIZE ];
+extern bool start_lora;
+extern LORA_MESSAGE last_lora_message;
 
 /*------------------------------------------------------------------------------
  Procedures                                                 
@@ -42,32 +47,18 @@ extern LORA_PRESET lora_preset;
 
 USB_STATUS terminal_loop
 	(
-	uint8_t	firmware_code  /* Board configuration */
+	void
 	)
 {
 /*------------------------------------------------------------------------------
  Local Variables 
 ------------------------------------------------------------------------------*/
-uint8_t     command_code;                      /* Command opcode              */
-//uint8_t     subcommand_code;                   /* Subcommand opcode           */
-USB_STATUS 	usb_status;  					   /* Status of USB module        */
-
-/*------------------------------------------------------------------------------
- Initializations 
-------------------------------------------------------------------------------*/
-// subcommand_code = 0;
-usb_status = USB_OK;                 
-
-/* Terminal Mode */
-led_set_color( LED_GREEN );
+uint8_t     command_code = usb_rx_byte[0];             /* Command opcode              */
+static USB_STATUS usb_status = USB_OK;  			   /* Status of USB module        */                
 
 /*------------------------------------------------------------------------------
  Terminal Handler                                                                  
 ------------------------------------------------------------------------------*/
-/* Receive byte from USB port */
-usb_status = usb_receive( &command_code         , 
-							sizeof( uint8_t ), 
-							RECIEVER_TERMINAL_TIMEOUT );
 
 if ( usb_status == USB_OK )
 	{
@@ -82,9 +73,9 @@ if ( usb_status == USB_OK )
 			ping();
 
 			/* Send firmware identifying code */
-			usb_transmit( &firmware_code   , 
-						sizeof( uint8_t ), 
-						HAL_DEFAULT_TIMEOUT );
+            usb_tx_byte[0] = FIRMWARE_RECEIVER;
+			usb_status = usb_transmit_IT( usb_tx_byte, 
+						                  sizeof( uint8_t ) );
 			break;
 			} /* CONNECT_OP */
 		/*-------------------------------------------------------------
@@ -92,8 +83,14 @@ if ( usb_status == USB_OK )
 		-------------------------------------------------------------*/
 		case DASHBOARD_OP:
 			{
+            /* begin LoRa polling mode*/
+            start_lora = true;
+
 			/* Get dashboard data */
-			usb_status = telem_loop();
+			memcpy(usb_tx_byte, &last_lora_message, LORA_MESSAGE_SIZE);
+
+            /* transmit */
+            usb_status = usb_transmit_IT(usb_tx_byte, LORA_MESSAGE_SIZE);
 			break;
 			} /* DASHBOARD_OP */
 		/*-------------------------------------------------------------
@@ -103,6 +100,15 @@ if ( usb_status == USB_OK )
 			{
 			uint8_t subcommand_code;
             LORA_STATUS command_status;
+            
+            /* This command will block long enough to mess up the LoRa blocking functions. 
+               If LoRa has already started, we can't allow re-configuration without implementing
+               a mechanism to request a stop from the other thread. */
+            if( start_lora )
+                {
+                error_fail_fast( ERROR_LORA_CMD_ERROR );
+                }
+
 			/* Recieve telem subcommand over USB */
 			usb_status = usb_receive( &subcommand_code       ,
 									sizeof( subcommand_code ),
@@ -143,52 +149,19 @@ if ( usb_status == USB_OK )
 
 		} /* switch( usb_rx_data ) */
 	} /* if ( usb_status == USB_OK ) */
+if( usb_status == USB_OK )
+    {
+    usb_status = usb_receive_IT( usb_rx_byte, 1 );
+    }
+else
+    {
+    error_fail_fast( ERROR_USB_UART_ERROR );
+    }
 
 return usb_status;
 
 } /* terminal_loop */
 
-
-USB_STATUS telem_loop
-	(
-	void
-	)
-{
-/*------------------------------------------------------------------------------
- Local Variables 
-------------------------------------------------------------------------------*/
-USB_STATUS 	usb_status;  					   /* Status of USB module        */
-uint8_t lora_payload[96];
-
-led_set_color(LED_YELLOW);
-
-/*------------------------------------------------------------------------------
- Initializations 
-------------------------------------------------------------------------------*/
-memset(lora_payload, 0, 96);
-usb_status = USB_OK;
-
-/*------------------------------------------------------------------------------
- DUMMY: Construct Payload 
-------------------------------------------------------------------------------*/
-
-/* HEADER */
-get_uid((void*)lora_payload);
-lora_payload[12] = 2;
-uint32_t tick = HAL_GetTick();
-memcpy( &(lora_payload[16]), &tick, 4 );
-
-/* CONTENTS */
-lora_payload[20] = 3; /* state */
-float stestims[6] = { 45, 50, 45, 0.2, 0.3, 0.1 };
-memcpy( &(lora_payload[21+24]), stestims, 24 );
-
-usb_status = usb_transmit( lora_payload, 96, 40 );
-
-led_set_color(LED_GREEN);
-
-return usb_status;
-}
 
 /*******************************************************************************
 * END OF FILE                                                                  *

@@ -42,16 +42,14 @@ extern "C" {
 extern uint32_t __user_config_start;
 #define USER_CONFIG_ADDR  ((LORA_PRESET*)&__user_config_start)
 
+/* global USB buffers */
+#define USB_BUF_SIZE 256
+
 /*------------------------------------------------------------------------------
  Function Prototypes
 ------------------------------------------------------------------------------*/
 
 USB_STATUS terminal_loop
-	(
-	uint8_t	firmware_code  /* Board configuration */
-	);
-
-USB_STATUS telem_loop
 	(
 	void
 	);
