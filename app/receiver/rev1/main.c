@@ -119,6 +119,8 @@ usb_receive_IT( usb_rx_byte, 1 );
 /* Terminal Mode */
 led_set_color( LED_GREEN );
 
+lora_status = lora_set_chip_mode( LORA_RX_CONTINUOUS_MODE );
+
 /*------------------------------------------------------------------------------
 Event Loop                                                                  
 ------------------------------------------------------------------------------*/
