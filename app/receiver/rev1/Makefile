@@ -230,7 +230,7 @@ $(BUILD_DIR):
 # flash to device
 ################################################################
 flash:
-	st-flash write $(BUILD_DIR)/$(TARGET).bin 0x08000000
+	st-flash --connect-under-reset write $(BUILD_DIR)/$(TARGET).bin 0x08000000
 
 ################################################################
 # erase device flash

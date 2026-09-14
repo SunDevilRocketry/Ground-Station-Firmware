@@ -31,6 +31,7 @@
 #include "math_sdr.h"
 #include "telemetry.h"
 #include "lora.h"
+#include "onboard_flash.h"
 
 /*------------------------------------------------------------------------------
  Global Variables                                                                  
