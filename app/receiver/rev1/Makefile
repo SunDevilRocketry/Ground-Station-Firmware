@@ -150,6 +150,7 @@ C_INCLUDES =                                           \
 -I$(INIT_DIR)/config/Inc                               \
 -I$(LIB_DIR)                                           \
 -I$(DRIVER_DIR)/imu									   \
+-I$(DRIVER_DIR)/gps									   \
 -I$(DRIVER_DIR)/led                                    \
 -I$(DRIVER_DIR)/lora                                   \
 -I$(DRIVER_DIR)/usb                                    \

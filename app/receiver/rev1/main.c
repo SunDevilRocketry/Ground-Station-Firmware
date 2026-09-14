@@ -42,7 +42,7 @@ uint8_t usb_rx_byte[ USB_BUF_SIZE ];
 
 /* LoRa global receive buffer */
 LORA_STATUS lora_status;
-LORA_MESSAGE last_lora_message;
+TELEMETRY_MESSAGE last_lora_message;
 bool start_lora = false;
 
 /* LoRa config settings */
@@ -108,7 +108,7 @@ else if( lora_init_status != LORA_OK )
     }
 
 /* Initialize LoRa buffer */
-memset(&last_lora_message, 0, LORA_MESSAGE_SIZE);
+memset(&last_lora_message, 0, TELEMETRY_MESSAGE_SIZE);
 
 /* Indicate Successful Initialization */
 led_set_color( LED_GREEN );
@@ -129,13 +129,13 @@ while (1)
     if( start_lora && lora_receive_ready() == LORA_READY )
         {
         led_set_color( LED_CYAN );
-        uint8_t rx_buf[LORA_MESSAGE_SIZE];
+        uint8_t rx_buf[TELEMETRY_MESSAGE_SIZE];
         uint8_t rx_size = 0;
-	    lora_status = lora_receive(rx_buf, LORA_MESSAGE_SIZE, &rx_size);
+	    lora_status = lora_receive(rx_buf, TELEMETRY_MESSAGE_SIZE, &rx_size);
 
-        if( lora_status == LORA_OK && rx_size == LORA_MESSAGE_SIZE )
+        if( lora_status == LORA_OK && rx_size == TELEMETRY_MESSAGE_SIZE )
             {
-            memcpy( &last_lora_message, rx_buf, LORA_MESSAGE_SIZE );
+            memcpy( &last_lora_message, rx_buf, TELEMETRY_MESSAGE_SIZE );
             }
         }
 
