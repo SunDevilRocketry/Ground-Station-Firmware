@@ -1,12 +1,12 @@
 # --------------------------------------------------------------
-# Blink Makefile (based on gcc)
+# Transmitter Makefile (based on gcc)
 #
 # --------------------------------------------------------------
 
 ################################################################
 # target
 ################################################################
-TARGET = blink
+TARGET = receiver
 
 
 ################################################################
@@ -30,13 +30,15 @@ BUILD_DIR = build
 # Library Directory
 LIB_DIR = ../../../lib
 
-# MCU Initialization Directory
-INIT_DIR = ../../../init
-
-# SDR Module directory
+# Module Path
 MOD_DIR = ../../../mod
 
-# Utilties directory
+# MCU Initialization Path
+INIT_DIR = ../../../init
+
+DRIVER_DIR = ../../../driver
+
+# Utilties path
 UTIL_DIR = $(LIB_DIR)/util
 
 
@@ -45,17 +47,15 @@ UTIL_DIR = $(LIB_DIR)/util
 ################################################################
 
 # C sources
-C_SOURCES =                                                          \
-main.c                                                               \
-$(INIT_DIR)/init.c                                                   \
-$(UTIL_DIR)/sdr_error.c                                              \
-$(INIT_DIR)/config/Src/stm32h7xx_it.c                                \
-$(INIT_DIR)/config/Src/stm32h7xx_hal_msp.c                           \
-$(INIT_DIR)/config/Src/system_stm32h7xx.c                            \
-$(MOD_DIR)/led/led.c                                                 \
-$(MOD_DIR)/common/common.c                                           \
-$(MOD_DIR)/common/common_error.c                                     \
-$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_cortex.c   \
+C_SOURCES =                                                         \
+main.c                                                              \
+terminal.c                                                          \
+$(INIT_DIR)/init.c                                                  \
+$(MOD_DIR)/error_sdr/error_sdr.c                                    \
+$(INIT_DIR)/config/Src/stm32h7xx_it.c                               \
+$(INIT_DIR)/config/Src/stm32h7xx_hal_msp.c                          \
+$(INIT_DIR)/config/Src/system_stm32h7xx.c                           \
+$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_cortex.c  \
 $(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_tim.c      \
 $(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_tim_ex.c   \
 $(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rcc.c      \
@@ -72,18 +72,28 @@ $(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_pwr_ex.c   \
 $(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal.c          \
 $(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_i2c.c      \
 $(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_i2c_ex.c   \
-$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart.c     \
-$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart_ex.c  \
-$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_exti.c 
+$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_exti.c     \
+$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart.c    \
+$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart_ex.c \
+$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_spi.c       \
+$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_spi_ex.c    \
+$(DRIVER_DIR)/led/led.c                                                \
+$(DRIVER_DIR)/lora/lora.c                                              \
+$(DRIVER_DIR)/usb/usb.c                                                \
+$(DRIVER_DIR)/onboard_flash/onboard_flash.c                          \
+$(MOD_DIR)/math_sdr/math_sdr.c                                           \
+$(MOD_DIR)/commands/commands.c
+
 
 # ASM sources
 ASM_SOURCES =  \
 startup_stm32h750xx.s
 
 
-#######################################
+################################################################
 # binaries
-#######################################
+################################################################
+
 PREFIX = arm-none-eabi-
 # The gcc compiler bin path can be either defined in make command via GCC_PATH variable (> make GCC_PATH=xxx)
 # either it can be added to the PATH environment variable.
@@ -101,9 +111,10 @@ endif
 HEX = $(CP) -O ihex
 BIN = $(CP) -O binary -S
  
-#######################################
+################################################################
 # CFLAGS
-#######################################
+################################################################
+
 # cpu
 CPU = -mcpu=cortex-m7
 
@@ -121,10 +132,11 @@ MCU = $(CPU) -mthumb $(FPU) $(FLOAT-ABI)
 AS_DEFS = 
 
 # C defines
-C_DEFS =  \
+C_DEFS =         \
 -DUSE_HAL_DRIVER \
 -DGROUND_STATION \
--DSTM32H750xx
+-DSTM32H750xx	 \
+-DA0005_REV1
 
 
 # AS includes
@@ -134,11 +146,20 @@ AS_INCLUDES =
 C_INCLUDES =                                           \
 -I.                                                    \
 -I$(INIT_DIR)                                          \
+-I$(UTIL_DIR)                                          \
 -I$(INIT_DIR)/config/Inc                               \
 -I$(LIB_DIR)                                           \
--I$(MOD_DIR)/led                                       \
--I$(MOD_DIR)/common                                    \
--I$(UTIL_DIR)                                          \
+-I$(DRIVER_DIR)/imu									   \
+-I$(DRIVER_DIR)/gps									   \
+-I$(DRIVER_DIR)/led                                    \
+-I$(DRIVER_DIR)/lora                                   \
+-I$(DRIVER_DIR)/usb                                    \
+-I$(DRIVER_DIR)/onboard_flash						   \
+-I$(MOD_DIR)/commands                                  \
+-I$(MOD_DIR)/math_sdr                                  \
+-I$(MOD_DIR)/error_sdr                                 \
+-I$(MOD_DIR)/telemetry                                 \
+-I$(MOD_DIR)/sensor                                    \
 -I$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Inc          \
 -I$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Inc/Legacy   \
 -I$(LIB_DIR)/Drivers/CMSIS/Device/ST/STM32H7xx/Include \
@@ -159,9 +180,10 @@ endif
 CFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
 
 
-#######################################
+################################################################
 # LDFLAGS
-#######################################
+################################################################
+
 # link script
 LDSCRIPT = STM32H750VBTx_FLASH.ld
 
@@ -174,9 +196,10 @@ LDFLAGS = $(MCU) -specs=nano.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BU
 all: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin
 
 
-#######################################
+################################################################
 # build the application
-#######################################
+################################################################
+
 # list of objects
 OBJECTS = $(addprefix $(BUILD_DIR)/,$(notdir $(C_SOURCES:.c=.o)))
 vpath %.c $(sort $(dir $(C_SOURCES)))
@@ -203,27 +226,27 @@ $(BUILD_DIR)/%.bin: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
 $(BUILD_DIR):
 	mkdir $@		
 
-#######################################
+################################################################
 # flash to device
-#######################################
+################################################################
 flash:
-	st-flash write $(BUILD_DIR)/$(TARGET).bin 0x08000000
+	st-flash --connect-under-reset write $(BUILD_DIR)/$(TARGET).bin 0x08000000
 
-#######################################
+################################################################
 # erase device flash
-#######################################
+################################################################
 erase:
 	st-flash erase
 
-#######################################
+################################################################
 # clean up
-#######################################
+################################################################
 clean:
 	-rm -fR $(BUILD_DIR)
   
-#######################################
+################################################################
 # dependencies
-#######################################
+################################################################
 -include $(wildcard $(BUILD_DIR)/*.d)
 
 # *** EOF ***

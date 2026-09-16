@@ -1,9 +1,9 @@
-[submodule "Unity"]
-	path = Unity
-	url = https://github.com/ThrowTheSwitch/Unity.git
 [submodule "mod"]
 	path = mod
-	url = git@github.com:SunDevilRocketry/mod.git
+	url = https://github.com/SunDevilRocketry/mod.git
 [submodule "lib"]
 	path = lib
-	url = git@github.com:SunDevilRocketry/lib.git
+	url = https://github.com/SunDevilRocketry/lib.git
+[submodule "driver"]
+	path = driver
+	url = https://github.com/SunDevilRocketry/driver.git

@@ -1,0 +1,77 @@
+/*******************************************************************************
+*
+* FILE: 
+*       main.h
+*
+* DESCRIPTION: 
+*		Transmits data recieved over UART/USB in order to test the wireless 
+*       transcievers
+*
+*******************************************************************************/
+
+
+/* Define to prevent recursive inclusion -------------------------------------*/
+#ifndef __MAIN_H
+#define __MAIN_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
+/*------------------------------------------------------------------------------
+ Includes                                                                     
+------------------------------------------------------------------------------*/
+
+/* HAL includes */
+#include "stm32h7xx_hal.h"
+
+/* project includes */
+#include "usb.h"
+//#include "lora.h"
+
+/*------------------------------------------------------------------------------
+ Macros
+------------------------------------------------------------------------------*/
+
+/* Generic HAL related macros */
+#define HAL_DEFAULT_TIMEOUT		( 10 )
+#define RECIEVER_TERMINAL_TIMEOUT    ( 100 )
+
+/* LoRa presets */
+extern uint32_t __user_config_start;
+#define USER_CONFIG_ADDR  ((LORA_PRESET*)&__user_config_start)
+
+/* global USB buffers */
+#define USB_BUF_SIZE 256
+
+/*------------------------------------------------------------------------------
+ Compatibility Typedefs
+------------------------------------------------------------------------------*/
+
+typedef struct SERVO_PRESET {
+	uint8_t rp_servo1;
+	uint8_t rp_servo2;
+	uint8_t rp_servo3;
+	uint8_t rp_servo4;
+} SERVO_PRESET;
+
+/*------------------------------------------------------------------------------
+ Function Prototypes
+------------------------------------------------------------------------------*/
+
+USB_STATUS terminal_loop
+	(
+	void
+	);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* __MAIN_H */
+
+
+/*******************************************************************************
+* END OF FILE                                                                  *
+*******************************************************************************/

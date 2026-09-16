@@ -20,7 +20,7 @@
 #include "sdr_pin_defines_A0005.h"
 #include "main.h"
 #include "init.h"
-#include "sdr_error.h"
+#include "error_sdr.h"
 
 
 /*------------------------------------------------------------------------------
@@ -192,9 +192,9 @@ hspi2.Init.MasterReceiverAutoSusp = SPI_MASTER_RX_AUTOSUSP_DISABLE;
 hspi2.Init.MasterKeepIOState = SPI_MASTER_KEEP_IO_STATE_DISABLE;
 hspi2.Init.IOSwap = SPI_IO_SWAP_DISABLE;
 if (HAL_SPI_Init(&hspi2) != HAL_OK)
-{
-Error_Handler(ERROR_LORA_SPI_INIT_ERROR);
-}
+    {
+    Error_Handler(ERROR_LORA_SPI_INIT_ERROR);
+    }
 
 }
 
@@ -231,39 +231,39 @@ HAL_GPIO_WritePin( STATUS_GPIO_PORT,
                    STATUS_B_PIN    , 
 				   GPIO_PIN_SET );
 
-HAL_GPIO_WritePin( GPIOC, 
-				   LORA_IO5_PIN	|
-				   LORA_IO2_PIN, 
-				   GPIO_PIN_RESET );
+// HAL_GPIO_WritePin( GPIOC, 
+// 				   LORA_IO5_PIN	|
+// 				   LORA_IO2_PIN, 
+// 				   GPIO_PIN_RESET );
 
-HAL_GPIO_WritePin( GPIOA, 
-				   LORA_RST_PIN |
-				   LORA_NSS_PIN  | 
-				   LORA_IO3_PIN |
-				   LORA_IO4_PIN |
-				   LORA_IO0_PIN |
-				   LORA_IO1_PIN, 
-				   GPIO_PIN_RESET );
+// HAL_GPIO_WritePin( GPIOA, 
+// 				   LORA_RST_PIN |
+// 				   LORA_NSS_PIN  | 
+// 				   LORA_IO3_PIN |
+// 				   LORA_IO4_PIN |
+// 				   LORA_IO0_PIN |
+// 				   LORA_IO1_PIN, 
+// 				   GPIO_PIN_RESET );
 
 HAL_GPIO_WritePin(GPIOE, GPIO_PIN_10|GPIO_PIN_11|GPIO_PIN_12, GPIO_PIN_RESET);
 
-GPIO_InitStruct.Pin = LORA_IO5_PIN |
-					  LORA_IO2_PIN;
-GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+// GPIO_InitStruct.Pin = LORA_IO5_PIN |
+// 					  LORA_IO2_PIN;
+// GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+// GPIO_InitStruct.Pull = GPIO_NOPULL;
+// GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+// HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-GPIO_InitStruct.Pin = LORA_RST_PIN |
-					  LORA_NSS_PIN  |
-					  LORA_IO3_PIN |
-					  LORA_IO4_PIN |
-					  LORA_IO0_PIN |
-					  LORA_IO1_PIN;
-GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+// GPIO_InitStruct.Pin = LORA_RST_PIN |
+// 					  LORA_NSS_PIN  |
+// 					  LORA_IO3_PIN |
+// 					  LORA_IO4_PIN |
+// 					  LORA_IO0_PIN |
+// 					  LORA_IO1_PIN;
+// GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+// GPIO_InitStruct.Pull = GPIO_NOPULL;
+// GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+// HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
 /*Configure GPIO pins : PE10 PE11 PE12 */
 GPIO_InitStruct.Pin   = STATUS_R_PIN |
