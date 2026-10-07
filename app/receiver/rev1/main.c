@@ -22,7 +22,7 @@
 #include "main.h"
 #include "init.h"
 #include "error_sdr.h"
-#include "sdr_pin_defines_A0005.h"
+#include "pindefs.h"
 
 /* SDR Modules */
 #include "led.h"
