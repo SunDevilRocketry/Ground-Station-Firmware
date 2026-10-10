@@ -17,7 +17,7 @@
 /*------------------------------------------------------------------------------
  Project Includes                                                               
 ------------------------------------------------------------------------------*/
-#include "sdr_pin_defines_A0005.h"
+#include "pindefs.h"
 #include "main.h"
 #include "init.h"
 #include "error_sdr.h"
