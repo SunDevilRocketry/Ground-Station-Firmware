@@ -65,6 +65,11 @@ USB_STATUS terminal_loop
 	void
 	);
 
+void lora_dma_init
+	(
+	void
+	);
+
 #ifdef __cplusplus
 }
 #endif

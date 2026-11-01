@@ -83,6 +83,7 @@ SystemClock_Config();   /* SysClock  */
 GPIO_Init         ();   /* GPIO Pins */
 USB_UART_Init     ();   /* USB       */
 LORA_SPI_Init     ();   /* LoRa      */
+lora_dma_init     ();   /* LoRa DMA and DIO0 interrupt */
 
 /* Get LoRa configs from nonvol. This is technically memory unsafe, but we know
    from the linker script that we have 256 bytes in this region, so its fine. */
@@ -127,12 +128,13 @@ Event Loop
 ------------------------------------------------------------------------------*/
 while (1)
 	{
-    if( start_lora && lora_receive_ready() == LORA_READY )
+    /* The driver reads each packet over DMA on RxDone. The largest LoRa payload always fits. */
+    if( start_lora && lora_has_new_data() )
         {
         led_set_color( LED_CYAN );
-        uint8_t rx_buf[TELEMETRY_MESSAGE_SIZE];
+        uint8_t rx_buf[255];
         uint8_t rx_size = 0;
-	    lora_status = lora_receive(rx_buf, TELEMETRY_MESSAGE_SIZE, &rx_size);
+        lora_status = lora_get_latest( rx_buf, sizeof( rx_buf ), &rx_size );
 
         if( lora_status == LORA_OK && rx_size == TELEMETRY_MESSAGE_SIZE )
             {

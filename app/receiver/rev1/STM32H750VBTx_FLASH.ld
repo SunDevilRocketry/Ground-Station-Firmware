@@ -225,6 +225,14 @@ SECTIONS
     . = ALIGN(32);
   } >RAM_D1
 
+  /* DMA buffers in D2 SRAM (0x30000000). DMA1/DMA2 cannot reach DTCM. */
+  .dma_buffer (NOLOAD) :
+  {
+    . = ALIGN(32);
+    *(.dma_buffer)
+    . = ALIGN(32);
+  } >RAM_D2
+
   /* Remove information from the standard libraries */
   /DISCARD/ :
   {
