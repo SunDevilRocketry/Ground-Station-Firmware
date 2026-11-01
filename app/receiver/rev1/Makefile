@@ -50,6 +50,7 @@ UTIL_DIR = $(LIB_DIR)/util
 C_SOURCES =                                                         \
 main.c                                                              \
 terminal.c                                                          \
+lora_dma.c                                                          \
 $(INIT_DIR)/init.c                                                  \
 $(MOD_DIR)/error_sdr/error_sdr.c                                    \
 $(INIT_DIR)/config/Src/stm32h7xx_it.c                               \
